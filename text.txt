@@ -1,0 +1,80 @@
+const express = require('express');
+const app = express();
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const port = process.env.PORT || 5000;
+const cors = require('cors');
+const mongoose = require('mongoose');
+
+
+app.use(cors());
+app.use(express.json());
+
+// ecosyncDB
+// 3eoJKDvLddqXBw3h
+
+
+
+const mongoUrl = "mongodb+srv://ecosyncDB:3eoJKDvLddqXBw3h@cluster0.ssi7z.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+})
+    .then(() => {
+        console.log("connect to databse");
+    })
+    .catch((err) => console.log(err));
+
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//     serverApi: {
+//         version: ServerApiVersion.v1,
+//         strict: true,
+//         deprecationErrors: true,
+//     }
+// });
+
+// async function run() {
+//     try {
+
+//         await client.connect();
+
+
+//         await client.db("admin").command({ ping: 1 });
+//         console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//     } finally {
+//         // Ensures that the client will close when you finish/error
+//         // await client.close();
+//     }
+// }
+// run().catch(console.dir);
+
+
+
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+});
+
+require('./userDetails');
+const User = mongoose.model('userInfo');
+
+// Create a user to send to the database
+app.post('/register', async (req, res) => {
+    const { username, email, role, password } = req.body;
+    try {
+        await User.create({
+            username: username,
+            email: email,
+            role: role,
+            password: password,
+        });
+        res.send({ status: "ok" });
+    } catch (error) {
+        res.send({ status: "error" });
+    }
+})
+
