@@ -3,6 +3,7 @@ const app = express();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 5000;
 const cors = require('cors');
+const ObjectId = require('mongodb').ObjectId;
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
@@ -35,7 +36,7 @@ mongoose.connect(mongoUrl, {
 require('./userDetails');
 const User = mongoose.model('userInfo');
 
-app.post('/auth/create', async (req, res) => {
+app.post('/users', async (req, res) => {
 
     const { username, email, userType, password } = req.body;
 
@@ -195,15 +196,41 @@ app.post("/reset-password/:id/:token", async (req, res) => {
     }
 });
 
+// Get all users api
+app.get('/users', async (req, res) => {
+    const users = await User.find();
+    res.send(users);
+});
 
+// delete specific user
+// delete order api
+app.delete('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const result = await User.deleteOne(query);
+    res.send(result);
+})
 
+// get all roles
+app.get('/users/roles', async (req, res) => {
+    const roles = await User.find();
+    res.send(roles);
+});
+
+// update user roles
+app.get("/users/:id/roles", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await User.findOne(query);
+    res.send(user);
+});
 
 
 
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Hello Code Samurai!');
 });
 
 app.listen(port, () => {

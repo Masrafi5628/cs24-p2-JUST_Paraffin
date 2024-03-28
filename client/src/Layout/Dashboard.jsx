@@ -15,10 +15,7 @@ const Dashboard = () => {
                     <li><NavLink to="/dashboard/allusers">All Users</NavLink></li>
                 </ul>
                 <ul className="menu">
-                    <li><NavLink to="/dashboard/availablerole">Available All Role</NavLink></li>
-                </ul>
-                <ul className="menu">
-                    <li><NavLink to="/dashboard/deleteuser">Delete User</NavLink></li>
+                    <li><NavLink to="/dashboard/allroles">Available All Roles</NavLink></li>
                 </ul>
             </div>
             <div className="w-full p-10">

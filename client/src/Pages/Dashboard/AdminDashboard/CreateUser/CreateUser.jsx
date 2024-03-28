@@ -12,7 +12,7 @@ const CreateUser = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/auth/create', {
+        axios.post('http://localhost:5000/users', {
             username: username,
             email: email,
             password: password,

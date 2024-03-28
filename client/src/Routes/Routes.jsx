@@ -18,6 +18,9 @@ import StsDashboard from "../Layout/StsDashboard";
 import StsWelcomeHome from "../Pages/Dashboard/StsDashboard/StsWelcomeHome/StsWelcomeHome";
 import LandfillDashboard from "../Layout/LandfillDashboard";
 import LandfillWelcomeHome from "../Pages/Dashboard/LandfillDashboard/LandfillWelcomeHome/LandfillWelcomeHome";
+import AllUsers from "../Pages/Dashboard/AdminDashboard/AllUsers/AllUsers";
+import AvailableRoles from "../Pages/Dashboard/AdminDashboard/AvailableRoles/AvailableRoles";
+import UpdateRole from "../Pages/Dashboard/AdminDashboard/UpdateRole/UpdateRole";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -36,6 +39,7 @@ export const router = createBrowserRouter([
             },
 
 
+
         ]
     },
     {
@@ -51,9 +55,23 @@ export const router = createBrowserRouter([
                 element: <CreateUser></CreateUser>
             },
             {
+                path: "allusers",
+                element: <AllUsers></AllUsers>
+            },
+            {
+                path: "allroles",
+                element: <AvailableRoles></AvailableRoles>
+            },
+            {
                 path: "deleteuser",
                 element: <DeleteUser></DeleteUser>
-            }
+            },
+            {
+                //http://localhost:5000/users/66059761f9bf025900cdcee6/roles
+                path: "users/:id/roles",
+                element: <UpdateRole></UpdateRole>,
+                loader: ({ params }) => fetch(`http://localhost:5000/users/${params.id}/roles`)
+            },
         ]
     },
     {
