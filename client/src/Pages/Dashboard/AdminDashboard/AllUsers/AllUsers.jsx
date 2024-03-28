@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const AllUsers = () => {
     const [users, setUsers] = useState([]);
@@ -63,7 +64,10 @@ const AllUsers = () => {
                                     <td>{user.email}</td>
                                     <td className="flex gap-2">
                                         <button className="bg-red-500 text-white px-4 py-1 rounded" onClick={() => handleDelete(user._id)}>Delete</button>
-                                        <button className="bg-blue-500 text-white px-4 py-1 rounded">Update</button>
+
+                                        <Link to={`/dashboard/users/${user._id}`}>
+                                            <button className="bg-blue-500 text-white px-4 py-1 rounded">Update User</button>
+                                        </Link>
                                     </td>
                                 </tr>
                             </tbody>

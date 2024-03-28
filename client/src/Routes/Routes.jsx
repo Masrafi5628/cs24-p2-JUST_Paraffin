@@ -21,6 +21,7 @@ import LandfillWelcomeHome from "../Pages/Dashboard/LandfillDashboard/LandfillWe
 import AllUsers from "../Pages/Dashboard/AdminDashboard/AllUsers/AllUsers";
 import AvailableRoles from "../Pages/Dashboard/AdminDashboard/AvailableRoles/AvailableRoles";
 import UpdateRole from "../Pages/Dashboard/AdminDashboard/UpdateRole/UpdateRole";
+import UpdateUserDetail from "../Pages/Dashboard/AdminDashboard/UpdateUserDetail/UpdateUserDetail";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -63,8 +64,10 @@ export const router = createBrowserRouter([
                 element: <AvailableRoles></AvailableRoles>
             },
             {
-                path: "deleteuser",
-                element: <DeleteUser></DeleteUser>
+                path: "users/:id",
+                element: <UpdateUserDetail></UpdateUserDetail>,
+                loader: ({ params }) => fetch(`http://localhost:5000/users/${params.id}`)
+
             },
             {
                 //http://localhost:5000/users/66059761f9bf025900cdcee6/roles

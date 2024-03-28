@@ -5,7 +5,25 @@ const UpdateRole = () => {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        console.log("Update Role")
+        const form = event.target;
+        const role = form.usertype.value;
+        console.log(role);
+        const updateRole = { role };
+
+        fetch(`http://localhost:5000/users/${loadedUser._id}/roles`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateRole),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                if (data.modifiedCount === 1) {
+                    alert('Role Updated Successfully');
+                }
+            });
     }
 
     return (
@@ -16,6 +34,7 @@ const UpdateRole = () => {
                 <form onSubmit={handleUpdate}>
                     <div className="flex flex-col gap-3">
                         <input
+                            name='usertype'
                             type="text"
                             defaultValue={loadedUser.userType}
                             className="input input-bordered w-full"

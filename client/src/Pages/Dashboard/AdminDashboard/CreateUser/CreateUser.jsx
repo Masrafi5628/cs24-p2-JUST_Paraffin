@@ -55,7 +55,7 @@ const CreateUser = () => {
                     <input
                         type="radio"
                         name="UserType"
-                        value="Landfil Manager"
+                        value="Landfill Manager"
                         onChange={(e) => setUserType(e.target.value)}
                     />
                     Landfil Manager

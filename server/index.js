@@ -202,6 +202,8 @@ app.get('/users', async (req, res) => {
     res.send(users);
 });
 
+
+
 // delete specific user
 // delete order api
 app.delete('/users/:id', async (req, res) => {
@@ -217,7 +219,7 @@ app.get('/users/roles', async (req, res) => {
     res.send(roles);
 });
 
-// update user roles
+// get api for role
 app.get("/users/:id/roles", async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
@@ -226,6 +228,46 @@ app.get("/users/:id/roles", async (req, res) => {
 });
 
 
+// update role api
+app.put('/users/:id/roles', async (req, res) => {
+    const id = req.params.id;
+    const updateRole = req.body;
+    console.log(updateRole);
+    const filer = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const updateDoc = {
+        $set: {
+            userType: updateRole.role,
+        },
+    };
+    const result = await User.updateOne(filer, updateDoc, options);
+    res.send(result);
+
+});
+
+// get api for user
+app.get("/users/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await User.findOne(query);
+    res.send(user);
+});
+// update user details api
+app.put('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const updateUser = req.body;
+    const filer = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const updateDoc = {
+        $set: {
+            username: updateUser.username,
+            email: updateUser.email,
+            userType: updateUser.userType,
+        },
+    };
+    const result = await User.updateOne(filer, updateDoc, options);
+    res.send(result);
+});
 
 
 
