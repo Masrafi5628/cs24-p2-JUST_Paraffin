@@ -17,6 +17,9 @@ const Dashboard = () => {
                 <ul className="menu">
                     <li><NavLink to="/dashboard/allroles">Available All Roles</NavLink></li>
                 </ul>
+                <ul className="menu">
+                    <li><NavLink to="/dashboard/addvehicle">Add Vehicle</NavLink></li>
+                </ul>
             </div>
             <div className="w-full p-10">
                 <Outlet></Outlet>

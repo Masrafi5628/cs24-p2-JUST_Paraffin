@@ -8,7 +8,6 @@ import Home from "../Pages/Home/Home/Home";
 import Login from "../Pages/Login/Login/Login";
 import Dashboard from "../Layout/Dashboard";
 import CreateUser from "../Pages/Dashboard/AdminDashboard/CreateUser/CreateUser";
-import DeleteUser from "../Pages/Dashboard/AdminDashboard/DeleteUser/DeleteUser";
 import UserDashboard from "../Layout/UserDashboard";
 import UserLogout from "../Pages/Dashboard/UserDashboard/UserLogout/UserLogout";
 import UserResetPassword from "../Pages/Dashboard/UserDashboard/UserResetPassword/UserResetPassword";
@@ -22,6 +21,7 @@ import AllUsers from "../Pages/Dashboard/AdminDashboard/AllUsers/AllUsers";
 import AvailableRoles from "../Pages/Dashboard/AdminDashboard/AvailableRoles/AvailableRoles";
 import UpdateRole from "../Pages/Dashboard/AdminDashboard/UpdateRole/UpdateRole";
 import UpdateUserDetail from "../Pages/Dashboard/AdminDashboard/UpdateUserDetail/UpdateUserDetail";
+import AddVehicle from "../Pages/Dashboard/AdminDashboard/AddVehicle/AddVehicle";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -75,6 +75,10 @@ export const router = createBrowserRouter([
                 element: <UpdateRole></UpdateRole>,
                 loader: ({ params }) => fetch(`http://localhost:5000/users/${params.id}/roles`)
             },
+            {
+                path: "addvehicle",
+                element: <AddVehicle></AddVehicle>
+            }
         ]
     },
     {

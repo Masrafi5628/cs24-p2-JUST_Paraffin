@@ -32,6 +32,7 @@ const Login = () => {
                         navigate('/landfilldashboard/landfillmanager');
                         break;
                     default:
+                        navigate('/userdashboard/userwelcome');
                         break;
                 }
             } else {

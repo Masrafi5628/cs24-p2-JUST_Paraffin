@@ -20,6 +20,7 @@ const CreateUser = () => {
         })
             .then(res => {
                 if (res.data.status === 'ok') {
+                    alert('User Added Successfully');
                     naviagate('/login');
                 }
 

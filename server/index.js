@@ -22,6 +22,8 @@ app.use(express.json());
 
 
 
+
+
 const mongoUrl = "mongodb+srv://ecosyncDB:3eoJKDvLddqXBw3h@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose.connect(mongoUrl, {
@@ -34,7 +36,12 @@ mongoose.connect(mongoUrl, {
 
 
 require('./userDetails');
+require('./vehiclesAdd');
 const User = mongoose.model('userInfo');
+const Vehicle = mongoose.model('vehiclesInfo');
+
+
+
 
 app.post('/users', async (req, res) => {
 
@@ -268,6 +275,56 @@ app.put('/users/:id', async (req, res) => {
     const result = await User.updateOne(filer, updateDoc, options);
     res.send(result);
 });
+// create a vechile collection and then store all vehicle data in it use mongodb atlas
+
+
+
+app.post('/vehicles', async (req, res) => {
+
+    const { registrationNumber, type, capacity, fuelCostLoaded, fuelCostUnloaded } = req.body;
+    try {
+        const oldVehicleRegistration = await Vehicle.findOne({ registrationNumber });
+
+        if (oldVehicleRegistration) {
+            return res.send({ status: "error", message: "Vehicle already exists" });
+        }
+        await Vehicle.create({
+            registrationNumber,
+            type,
+            capacity,
+            fuelCostLoaded,
+            fuelCostUnloaded
+        });
+        res.send({ status: "ok" });
+    }
+    catch (err) {
+        console.log({ status: "error" });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
