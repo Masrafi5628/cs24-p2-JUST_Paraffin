@@ -7,6 +7,15 @@ const BillDetailsSchema = new mongoose.Schema({
     wasteVolume: {
         type: Number
     },
+    distance: {
+        type: Number
+    },
+    departureLocation: {
+        type: String
+    },
+    arrivalLocation: {
+        type: String
+    },
     billAmount: {
         type: Number
     },

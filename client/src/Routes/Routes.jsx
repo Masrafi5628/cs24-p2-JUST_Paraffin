@@ -30,6 +30,7 @@ import AssignManager from "../Pages/Dashboard/AdminDashboard/AssignManager/Assig
 import AddEntryTruck from "../Pages/Dashboard/LandfillDashboard/AddEntryTrack/AddEntryTruck";
 import StsAddVehicle from "../Pages/Dashboard/StsDashboard/AddVehicle/StsAddVehicle";
 import CreateBill from "../Pages/Dashboard/LandfillDashboard/CreateBill/CreateBill";
+import ViewGenerate from "../Pages/Dashboard/LandfillDashboard/ViewGenerate/ViewGenerate";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -160,6 +161,10 @@ export const router = createBrowserRouter([
             {
                 path: "createbill",
                 element: <CreateBill></CreateBill>
+            },
+            {
+                path: "createbillpage",
+                element: <ViewGenerate></ViewGenerate>
             }
         ]
     }

@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const CreateBill = () => {
+    const navigate = useNavigate();
     const [registrationNumber, SetRegistrationNumber] = useState("");
     const [wasteVolume, setWasteVolume] = useState("");
+    const [distance, setDistance] = useState("");
+    const [departureLocation, setDepartureLocation] = useState("");
+    const [arrivalLocation, setArrivalLocation] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+
+
 
     const handleOneSubmit = (e) => {
         e.preventDefault();
+
+
 
         // Check if input values are valid numbers
         if (isNaN(parseFloat(wasteVolume))) {
@@ -18,14 +27,21 @@ const CreateBill = () => {
         // Make API call to create bill
         axios.post('http://localhost:5000/createbill', {
             registrationNumber: registrationNumber,
-            wasteVolume: wasteVolume
+            wasteVolume: wasteVolume,
+            distance: distance,
+            departureLocation: departureLocation,
+            arrivalLocation: arrivalLocation
         })
             .then(res => {
                 if (res.data.status === 'ok') {
                     alert('Bill Generated Successfully');
                     SetRegistrationNumber(""); // Clear input fields after successful submission
                     setWasteVolume("");
+                    setDistance("");
+                    setDepartureLocation("");
+                    setArrivalLocation("");
                     setErrorMessage(""); // Clear error message
+                    navigate('/landfilldashboard/createbillpage'); // Redirect to viewgenerate page after successful submission
                 }
             })
             .catch(err => {
@@ -46,6 +62,7 @@ const CreateBill = () => {
                     type="text"
                     placeholder="Vehicle Number"
                     className="input input-bordered w-full"
+                // required
                 />
                 <input
                     value={wasteVolume}
@@ -53,10 +70,37 @@ const CreateBill = () => {
                     type="text"
                     placeholder="Waste Volume"
                     className="input input-bordered w-full"
+                // required
                 />
+                <input
+                    value={distance}
+                    onChange={(e) => setDistance(e.target.value)}
+                    type="text"
+                    placeholder="Distance"
+                    className="input input-bordered w-full"
+                // required
+                />
+                <input
+                    value={departureLocation}
+                    onChange={(e) => setDepartureLocation(e.target.value)}
+                    type="text"
+                    placeholder="Departure Location"
+                    className="input input-bordered w-full"
+                // required
+                />
+                <input
+                    value={arrivalLocation}
+                    onChange={(e) => setArrivalLocation(e.target.value)}
+                    type="text"
+                    placeholder="Arrival Location"
+                    className="input input-bordered w-full"
+                // required
+                />
+
                 <button type="submit" className="btn btn-primary">
-                    Generate Bill
+                    Submit and Generate Bill
                 </button>
+
                 {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             </form>
         </div>

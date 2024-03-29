@@ -479,41 +479,10 @@ app.post('/stsvehicleadd', async (req, res) => {
 //     res.send({ capacity: oldStsId.capacity, fuelCostLoaded: oldStsId.fuelCostLoaded, fuelCostUnloaded: oldStsId.fuelCostUnloaded });
 // });
 
-// app.post('/createbill', async (req, res) => {
-//     const { vehicleNumber, wasteVolume } = req.body;
 
-
-//     try {
-//         const oldStsId = await Vehicle.findOne({ vehicleNumber });
-
-//         if (!oldStsId) {
-//             return res.status(404).json({ status: "error", message: "Vehicle not found" });
-//         }
-
-//         const capacity = { capacity: oldStsId.capacity };
-//         const fuelCostLoaded = { fuelCostLoaded: oldStsId.fuelCostLoaded };
-//         const fuelCostUnloaded = { fuelCostUnloaded: oldStsId.fuelCostUnloaded };
-//         if (isNaN(capacity) || isNaN(fuelCostLoaded) || isNaN(fuelCostUnloaded) || isNaN(wasteVolume)) {
-//             return res.status(400).json({ status: "error", message: "Invalid input data" });
-//         }
-//         const cost = fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded));
-
-//         await BillDetails.create({
-//             vehicleNumber,
-//             wasteVolume,
-//             billAmount: cost
-//         });
-
-//         res.status(201).json({ status: "ok", message: "Bill added successfully" });
-//     } catch (err) {
-//         console.error("Error adding Bill:", err);
-//         res.status(500).json({ status: "error", message: "Internal server error" });
-//     }
-
-// });
 
 app.post('/createbill', async (req, res) => {
-    const { registrationNumber, wasteVolume } = req.body;
+    const { registrationNumber, wasteVolume, distance, departureLocation, arrivalLocation } = req.body;
 
     try {
         // Find the vehicle details by its registration number
@@ -532,12 +501,15 @@ app.post('/createbill', async (req, res) => {
         }
 
         // Calculate the bill amount based on the provided formula
-        const cost = fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded));
+        const cost = (fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded))) * distance;
 
         // Create a new bill entry in the database
         await BillDetails.create({
             registrationNumber,
             wasteVolume,
+            distance,
+            departureLocation,
+            arrivalLocation,
             billAmount: cost
         });
 
@@ -546,6 +518,18 @@ app.post('/createbill', async (req, res) => {
     } catch (err) {
         console.error("Error adding Bill:", err);
         res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+
+// get all bills
+app.get('/bills', async (req, res) => {
+    try {
+        const bills = await BillDetails.find();
+        res.json(bills);
+    } catch (err) {
+        console.error("Error fetching bills:", err);
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 
