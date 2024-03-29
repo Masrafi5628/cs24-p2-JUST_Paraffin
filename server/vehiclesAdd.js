@@ -3,21 +3,19 @@ const mongoose = require('mongoose');
 const vehicleDetailsSchema = new mongoose.Schema({
 
     registrationNumber: {
-        type: String, unique: true
+        type: String
     },
     type: {
-        type: String, unique: true
+        type: String
     },
     capacity: {
-        type: String, unique: true
+        type: Number
     },
     fuelCostLoaded: {
-        type: Number,
-        unique: true
+        type: Number
     },
     fuelCostUnloaded: {
-        type: Number,
-        required: true
+        type: Number
     },
 },
     {
