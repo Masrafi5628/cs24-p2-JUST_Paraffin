@@ -8,6 +8,9 @@ const StsDashboard = () => {
                 <ul className="menu">
                     <li><NavLink to="/stsdashboard/stsmanager">Sts Home</NavLink></li>
                 </ul>
+                <ul className="menu">
+                    <li><NavLink to="/stsdashboard/addvehicle">Add Vehicle</NavLink></li>
+                </ul>
 
 
             </div>

@@ -22,6 +22,13 @@ import AvailableRoles from "../Pages/Dashboard/AdminDashboard/AvailableRoles/Ava
 import UpdateRole from "../Pages/Dashboard/AdminDashboard/UpdateRole/UpdateRole";
 import UpdateUserDetail from "../Pages/Dashboard/AdminDashboard/UpdateUserDetail/UpdateUserDetail";
 import AddVehicle from "../Pages/Dashboard/AdminDashboard/AddVehicle/AddVehicle";
+import AddSTS from "../Pages/Dashboard/AdminDashboard/AddSTS/AddSTS";
+import RoleManagement from "../Pages/Dashboard/AdminDashboard/RoleManagement/RoleManagement";
+import AddLandfillSite from "../Pages/Dashboard/AdminDashboard/AddLandfillSItes/AddLandfillSite";
+import LandFillManagement from "../Pages/Dashboard/AdminDashboard/LandfillManagements/LandFillManagement/LandFillManagement";
+import AssignManager from "../Pages/Dashboard/AdminDashboard/AssignManager/AssignManager";
+import AddEntryTruck from "../Pages/Dashboard/LandfillDashboard/AddEntryTrack/AddEntryTruck";
+import StsAddVehicle from "../Pages/Dashboard/StsDashboard/AddVehicle/StsAddVehicle";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -78,6 +85,27 @@ export const router = createBrowserRouter([
             {
                 path: "addvehicle",
                 element: <AddVehicle></AddVehicle>
+            },
+            {
+                path: "addSTS",
+                element: <AddSTS></AddSTS>
+            },
+            {
+                path: "addlandfill",
+                element: <AddLandfillSite></AddLandfillSite>
+            },
+            {
+                path: "rolemanage",
+                element: <RoleManagement></RoleManagement>
+            },
+            {
+                path: "assignlandfillmanager",
+                element: <LandFillManagement></LandFillManagement>
+            },
+            {
+                path: "assignmanager/:id",
+                element: <AssignManager></AssignManager>,
+                loader: ({ params }) => fetch(`http://localhost:5000/landfills/${params.id}`)
             }
         ]
     },
@@ -108,6 +136,10 @@ export const router = createBrowserRouter([
             {
                 path: "stsmanager",
                 element: <StsWelcomeHome></StsWelcomeHome>
+            },
+            {
+                path: "addvehicle",
+                element: <StsAddVehicle></StsAddVehicle>
             }
         ]
     },
@@ -119,6 +151,10 @@ export const router = createBrowserRouter([
             {
                 path: "landfillmanager",
                 element: <LandfillWelcomeHome></LandfillWelcomeHome>
+            },
+            {
+                path: "addtruck",
+                element: <AddEntryTruck></AddEntryTruck>
             }
         ]
     }

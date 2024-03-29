@@ -8,6 +8,9 @@ const LandfillDashboard = () => {
                 <ul className="menu">
                     <li><NavLink to="/landfilldashboard/landfillmanager">Landfill Home</NavLink></li>
                 </ul>
+                <ul className="menu">
+                    <li><NavLink to="/landfilldashboard/addtruck">Add Entry Truck</NavLink></li>
+                </ul>
 
 
             </div>

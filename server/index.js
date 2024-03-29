@@ -37,9 +37,16 @@ mongoose.connect(mongoUrl, {
 
 require('./userDetails');
 require('./vehiclesAdd');
+require('./stsAdd');
+require('./landfillAdd')
+require('./trcukAdd');
+require('./stsAddVehcile');
 const User = mongoose.model('userInfo');
 const Vehicle = mongoose.model('vehiclesInfo');
-
+const Sts = mongoose.model('stsInfo');
+const Landfill = mongoose.model('landfillSitesInfo');
+const Truck = mongoose.model('trucksInfo');
+const StsVehcile = mongoose.model('stsvehcileInfo');
 
 
 
@@ -278,7 +285,12 @@ app.put('/users/:id', async (req, res) => {
 // create a vechile collection and then store all vehicle data in it use mongodb atlas
 
 
+app.get('/vehicles', async (req, res) => {
+    const vehicles = await Vehicle.find();
+    res.send(vehicles);
+});
 
+// add vehicle post api
 app.post('/vehicles', async (req, res) => {
 
     const { registrationNumber, type, capacity, fuelCostLoaded, fuelCostUnloaded } = req.body;
@@ -302,25 +314,139 @@ app.post('/vehicles', async (req, res) => {
     }
 });
 
+// add sts post api
+app.post('/sts', async (req, res) => {
+
+    const { wardNumber, capacity, latitude, longitude } = req.body;
+    try {
+        const oldSts = await Sts.findOne({ wardNumber });
+
+        if (oldSts) {
+            return res.send({ status: "error", message: "sts already exists" });
+        }
+        await Sts.create({
+            wardNumber,
+            capacity,
+            latitude,
+            longitude
+        });
+        console.log({ status: "ok" });
+        res.send({ status: "ok" });
+    }
+    catch (err) {
+        console.log({ status: "error" });
+    }
+});
+
+// add Landfill post api
+app.post('/landfill', async (req, res) => {
+    const { name, capacity, operationalTimespan, latitude, longitude, managers } = req.body;
+
+    try {
+        // Check if the landfill with the given name already exists
+        const oldLandfill = await Landfill.findOne({ name });
+        if (oldLandfill) {
+            return res.send({ status: "error", message: "Landfill already exists" });
+        }
+
+        // Create the new landfill with provided details
+        const newLandfill = await Landfill.create({
+            name,
+            capacity,
+            operationalTimespan,
+            latitude,
+            longitude,
+            managers: managers || [] // Initialize managers as an empty array if not provided
+        });
+
+        console.log({ status: "ok" });
+        res.send({ status: "ok", data: newLandfill });
+    } catch (err) {
+        console.error("Error creating landfill:", err);
+        res.status(500).send({ status: "error", message: "Internal server error" });
+    }
+});
+
+
+// GET all landfills
+app.get('/landfills', async (req, res) => {
+    try {
+        const landfills = await Landfill.find();
+        res.json(landfills);
+    } catch (err) {
+        console.error("Error fetching landfills:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// GET a specific landfill by ID
+app.get('/landfills/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const landfill = await Landfill.findById(id);
+        if (!landfill) {
+            return res.status(404).json({ error: "Landfill not found" });
+        }
+        res.json(landfill);
+    } catch (err) {
+        console.error("Error fetching landfill:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 
 
+// add Truck post api
+app.post('/addtruck', async (req, res) => {
+    const { truckNumber, weightofWaste, timeofArrival, timeofDeparture } = req.body;
+
+    try {
+        const oldTruckNumber = await Truck.findOne({ truckNumber });
+
+        if (oldTruckNumber) {
+            return res.status(400).json({ status: "error", message: "Truck already exists" });
+        }
+
+        await Truck.create({
+            truckNumber,
+            weightofWaste,
+            timeofArrival,
+            timeofDeparture
+        });
+
+        res.status(201).json({ status: "ok", message: "Truck added successfully" });
+    } catch (err) {
+        console.error("Error adding truck:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
 
 
+app.post('/stsvehicleadd', async (req, res) => {
+    const { stsId, vehicleNumber, weightofWaste, timeofArrival, timeofDeparture } = req.body;
 
+    try {
+        const oldStsId = await StsVehcile.findOne({ stsId });
 
+        if (oldStsId) {
+            return res.status(400).json({ status: "error", message: "STS Vehicle already exists" });
+        }
 
+        await StsVehcile.create({
+            stsId,
+            vehicleNumber,
+            weightofWaste,
+            timeofArrival,
+            timeofDeparture
+        });
 
-
-
-
-
-
-
-
-
-
+        res.status(201).json({ status: "ok", message: "STS Vehicle added successfully" });
+    } catch (err) {
+        console.error("Error adding STS Vehicle:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
 
 
 
