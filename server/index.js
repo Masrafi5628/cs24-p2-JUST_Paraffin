@@ -577,11 +577,20 @@ app.post('/stsvehicleadd', async (req, res) => {
 
 
 app.post('/createbill', async (req, res) => {
-    const { registrationNumber, wasteVolume, distance, departureLocation, arrivalLocation } = req.body;
+    const { registrationNumber, wasteVolume, departureLocation, arrivalLocation } = req.body;
 
     try {
         // Find the vehicle details by its registration number
         const vehicle = await Vehicle.findOne({ registrationNumber: registrationNumber });
+        const loc_1 = await Landfill.findOne({ name: departureLocation });
+        const loc_2 = await Landfill.findOne({ name: arrivalLocation });
+        // If the place not found
+        if (!loc_1) {
+            return res.status(404).json({ status: "error", message: "Departure Location not found" });
+        }
+        if (!loc_2) {
+            return res.status(404).json({ status: "error", message: "Arrival Location not found" });
+        }
 
         if (!vehicle) {
             return res.status(404).json({ status: "error", message: "Vehicle not found" });
@@ -589,20 +598,26 @@ app.post('/createbill', async (req, res) => {
 
         // Extract the required details from the vehicle object
         const { capacity, fuelCostLoaded, fuelCostUnloaded } = vehicle;
+        const { longitude: longitude11, latitude: latitude12 } = loc_1;
+        const { longitude: longitude21, latitude: latitude22 } = loc_2;
 
         // Check if any of the required details are missing or not a number
         if (!capacity || isNaN(capacity) || !fuelCostLoaded || isNaN(fuelCostLoaded) || !fuelCostUnloaded || isNaN(fuelCostUnloaded) || isNaN(wasteVolume)) {
             return res.status(400).json({ status: "error", message: "Invalid input data or missing vehicle details" });
         }
+        if (!longitude11 || isNaN(longitude11) || !latitude12 || isNaN(latitude12) || !longitude21 || isNaN(longitude21) || !latitude22 || isNaN(latitude22)) {
+            return res.status(400).json({ status: "error", message: "Invalid input data or missing location details" });
+        }
 
         // Calculate the bill amount based on the provided formula
-        const cost = (fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded))) * distance;
+        const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
 
+        const cost = (fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded))) * dis;
         // Create a new bill entry in the database
         await BillDetails.create({
             registrationNumber,
             wasteVolume,
-            distance,
+            distance: dis,
             departureLocation,
             arrivalLocation,
             billAmount: cost
@@ -639,6 +654,7 @@ app.get('/userInfo', async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
 
 
 

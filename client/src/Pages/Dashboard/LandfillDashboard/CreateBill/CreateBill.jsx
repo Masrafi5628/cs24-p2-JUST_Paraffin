@@ -6,7 +6,6 @@ const CreateBill = () => {
     const navigate = useNavigate();
     const [registrationNumber, SetRegistrationNumber] = useState("");
     const [wasteVolume, setWasteVolume] = useState("");
-    const [distance, setDistance] = useState("");
     const [departureLocation, setDepartureLocation] = useState("");
     const [arrivalLocation, setArrivalLocation] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -28,7 +27,7 @@ const CreateBill = () => {
         axios.post('http://localhost:5000/createbill', {
             registrationNumber: registrationNumber,
             wasteVolume: wasteVolume,
-            distance: distance,
+
             departureLocation: departureLocation,
             arrivalLocation: arrivalLocation
         })
@@ -37,7 +36,6 @@ const CreateBill = () => {
                     alert('Bill Generated Successfully');
                     SetRegistrationNumber(""); // Clear input fields after successful submission
                     setWasteVolume("");
-                    setDistance("");
                     setDepartureLocation("");
                     setArrivalLocation("");
                     setErrorMessage(""); // Clear error message
@@ -72,14 +70,7 @@ const CreateBill = () => {
                     className="input input-bordered w-full  mb-3"
                 // required
                 />
-                <input
-                    value={distance}
-                    onChange={(e) => setDistance(e.target.value)}
-                    type="text"
-                    placeholder="Distance"
-                    className="input input-bordered  mb-3 w-full"
-                // required
-                />
+
                 <input
                     value={departureLocation}
                     onChange={(e) => setDepartureLocation(e.target.value)}
