@@ -47,6 +47,9 @@ const stsDetailsSchema = new mongoose.Schema({
     capacity: {
         type: Number
     },
+    location: {
+        type: String
+    },
     latitude: {
         type: Number
     },

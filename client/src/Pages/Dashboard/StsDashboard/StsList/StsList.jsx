@@ -1,45 +1,35 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const CreateBill = () => {
+const StsList = () => {
     const navigate = useNavigate();
-    const [registrationNumber, SetRegistrationNumber] = useState("");
-    const [wasteVolume, setWasteVolume] = useState("");
+
     const [departureLocation, setDepartureLocation] = useState("");
     const [arrivalLocation, setArrivalLocation] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-
+    console.log(departureLocation, arrivalLocation);
 
     const handleOneSubmit = (e) => {
         e.preventDefault();
 
-
-
-        // Check if input values are valid numbers
-        if (isNaN(parseFloat(wasteVolume))) {
-            setErrorMessage("Invalid waste volume. Please enter a valid number.");
-            return;
-        }
+        console.log(departureLocation, arrivalLocation);
 
         // Make API call to create bill
-        axios.post('http://localhost:5000/createbill', {
-            registrationNumber: registrationNumber,
-            wasteVolume: wasteVolume,
+        axios.post('http://localhost:5000/route-view', {
 
             departureLocation: departureLocation,
             arrivalLocation: arrivalLocation
         })
             .then(res => {
                 if (res.data.status === 'ok') {
-                    alert('Bill Generated Successfully');
-                    SetRegistrationNumber(""); // Clear input fields after successful submission
-                    setWasteVolume("");
+                    alert('Route Generated Successfully');
+
                     setDepartureLocation("");
                     setArrivalLocation("");
                     setErrorMessage(""); // Clear error message
-                    navigate('/landfilldashboard/createbillpage'); // Redirect to viewgenerate page after successful submission
+                    navigate('/stsdashboard/createmap'); // Redirect to viewgenerate page after successful submission
                 }
             })
             .catch(err => {
@@ -51,25 +41,12 @@ const CreateBill = () => {
             });
     }
 
+
+
     return (
         <div>
             <form onSubmit={handleOneSubmit} className="f-flex flex-col max-w-screen-md mx-auto">
-                <input
-                    value={registrationNumber}
-                    onChange={(e) => SetRegistrationNumber(e.target.value)}
-                    type="text"
-                    placeholder="Vehicle Number"
-                    className="input input-bordered w-full mb-3"
-                    required
-                />
-                <input
-                    value={wasteVolume}
-                    onChange={(e) => setWasteVolume(e.target.value)}
-                    type="text"
-                    placeholder="Waste Volume"
-                    className="input input-bordered w-full  mb-3"
-                    required
-                />
+
 
                 <input
                     value={departureLocation}
@@ -83,13 +60,13 @@ const CreateBill = () => {
                     value={arrivalLocation}
                     onChange={(e) => setArrivalLocation(e.target.value)}
                     type="text"
-                    placeholder="Arrival Location "
+                    placeholder="Arrival Location"
                     className="input input-bordered  mb-3 w-full"
                     required
                 />
 
                 <button type="submit" className="btn btn-primary">
-                    Submit and Generate Bill
+                    Find Optimal Route
                 </button>
 
                 {errorMessage && <p className="text-red-500">{errorMessage}</p>}
@@ -98,4 +75,4 @@ const CreateBill = () => {
     );
 };
 
-export default CreateBill;
+export default StsList;

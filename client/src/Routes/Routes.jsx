@@ -35,6 +35,9 @@ import UpdateLandfillDetail from "../Pages/Dashboard/LandfillDashboard/UpdateLan
 import AdminProfileUpdate from "../Pages/Dashboard/AdminDashboard/AdminProfileUpdate/AdminProfileUpdate";
 import StsProfileUpdate from "../Pages/Dashboard/StsDashboard/StsProfileUpdate/StsProfileUpdate";
 import UserProfileUpdate from "../Pages/Dashboard/UserDashboard/UserProfileUpdate/UserProfileUpdate";
+import StsRouteView from "../Pages/Dashboard/StsDashboard/StsRouteView/StsRouteView";
+import StsList from "../Pages/Dashboard/StsDashboard/StsList/StsList";
+import CreateMapPage from "../Pages/Dashboard/StsDashboard/CreateMapPage/CreateMapPage";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -164,7 +167,23 @@ export const router = createBrowserRouter([
                 element: <StsProfileUpdate></StsProfileUpdate>,
                 loader: ({ params }) => fetch(`http://localhost:5000/profile/${params.id}`)
 
+            },
+            {
+                path: "stsinfolists",
+                element: <StsList></StsList>,
+                loader: () => fetch('http://localhost:5000/stsinfo')
+
+            },
+            {
+                path: "stsview/:id",
+                element: <StsRouteView></StsRouteView>,
+                loader: ({ params }) => fetch(`http://localhost:5000/stsinfo/${params.id}`)
+            },
+            {
+                path: "createmap",
+                element: <CreateMapPage></CreateMapPage>
             }
+
         ]
     },
     {

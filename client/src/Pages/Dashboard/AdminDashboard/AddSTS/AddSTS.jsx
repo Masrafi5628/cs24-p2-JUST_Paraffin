@@ -7,13 +7,14 @@ const AddSTS = () => {
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
     const [managers, setManagers] = useState([]);
+    const [location, setLocation] = useState('');
     const [truckNumber, setTruckNumber] = useState('');
     const [truckCapacity, setTruckCapacity] = useState('');
 
     const handleStsSubmit = async (e) => {
         e.preventDefault();
         // Validate inputs
-        if (!wardNumber || !capacity || !latitude || !longitude || !truckNumber || !truckCapacity) {
+        if (!wardNumber || !capacity || !location || !latitude || !longitude || !truckNumber || !truckCapacity) {
             alert("Please provide all required fields.");
             return;
         }
@@ -28,6 +29,7 @@ const AddSTS = () => {
             const response = await axios.post('http://localhost:5000/sts', {
                 wardNumber,
                 capacity,
+                location,
                 latitude,
                 longitude,
                 managers,
@@ -61,6 +63,13 @@ const AddSTS = () => {
                     type="text"
                     placeholder="Capacity"
                     onChange={(e) => setCapacity(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Location"
+                    onChange={(e) => setLocation(e.target.value)}
                     className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
                     required
                 />

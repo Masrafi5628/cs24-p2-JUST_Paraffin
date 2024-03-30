@@ -59,14 +59,14 @@ const AddLandfillSite = () => {
                 />
                 <input
                     type="text"
-                    placeholder="Latitude (Radians)"
+                    placeholder="Latitude (Degree)"
                     onChange={(e) => setLatitude(e.target.value)}
                     className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
                     required
                 />
                 <input
                     type="text"
-                    placeholder="Longitude (Radians)"
+                    placeholder="Longitude (Degree)"
                     onChange={(e) => setLongitude(e.target.value)}
                     className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
                     required

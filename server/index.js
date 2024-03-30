@@ -42,6 +42,7 @@ require('./landfillAdd')
 require('./trcukAdd');
 require('./stsAddVehcile');
 require('./billGenerate');
+require('./route-view');
 const User = mongoose.model('userInfo');
 const Vehicle = mongoose.model('vehiclesInfo');
 const Sts = mongoose.model('stsInfo');
@@ -49,6 +50,7 @@ const Landfill = mongoose.model('landfillSitesInfo');
 const Truck = mongoose.model('trucksInfo');
 const StsVehcile = mongoose.model('stsvehcileInfo');
 const BillDetails = mongoose.model('BillDetails');
+const RouteView = mongoose.model('routeview');
 
 
 
@@ -367,11 +369,11 @@ app.post('/vehicles', async (req, res) => {
 
 
 app.post('/sts', async (req, res) => {
-    const { wardNumber, capacity, latitude, longitude, managers, trucks } = req.body;
+    const { wardNumber, capacity, location, latitude, longitude, managers, trucks } = req.body;
 
     try {
         // Check if required fields are present
-        if (!wardNumber || !capacity || !latitude || !longitude) {
+        if (!wardNumber || !capacity || !location || !latitude || !longitude) {
             return res.status(400).send({ status: "error", message: "Please provide all required fields" });
         }
 
@@ -391,6 +393,7 @@ app.post('/sts', async (req, res) => {
         const newSTS = await Sts.create({
             wardNumber,
             capacity,
+            location,
             latitude,
             longitude,
             managers: managers || [],
@@ -556,6 +559,11 @@ app.post('/createbill', async (req, res) => {
             return res.status(400).json({ status: "error", message: "Invalid input data or missing location details" });
         }
 
+        longitude11 = longitude11 * Math.PI / 180;
+        latitude12 = latitude12 * Math.PI / 180;
+        longitude21 = longitude21 * Math.PI / 180;
+        latitude22 = latitude22 * Math.PI / 180;
+
         // Calculate the bill amount based on the provided formula
         const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
 
@@ -578,6 +586,47 @@ app.post('/createbill', async (req, res) => {
     }
 });
 
+// post route-view
+app.post('/route-view', async (req, res) => {
+    const { departureLocation, arrivalLocation } = req.body;
+
+    try {
+        const loc_1 = await Landfill.findOne({ name: departureLocation });
+        const loc_2 = await Landfill.findOne({ name: arrivalLocation });
+
+        if (!loc_1) {
+            return res.status(404).json({ status: "error", message: "Departure Location not found" });
+        }
+        if (!loc_2) {
+            return res.status(404).json({ status: "error", message: "Arrival Location not found" });
+        }
+
+        // Assuming loc_1 and loc_2 contain the required latitude and longitude values
+        const { longitude: longitude11, latitude: latitude12 } = loc_1;
+        const { longitude: longitude21, latitude: latitude22 } = loc_2;
+
+        if (!longitude11 || isNaN(longitude11) || !latitude12 || isNaN(latitude12) || !longitude21 || isNaN(longitude21) || !latitude22 || isNaN(latitude22)) {
+            return res.status(400).json({ status: "error", message: "Invalid input data or missing location details" });
+        }
+        const lat1 = latitude12;
+        const long1 = longitude11;
+        const lat2 = latitude22;
+        const long2 = longitude21;
+        // Create a new RouteView document
+        await RouteView.create({
+            lat1,
+            long1,
+            lat2,
+            long2
+        });
+
+        res.status(201).json({ status: "ok", message: "Route added successfully" });
+    } catch (err) {
+        console.error("Error adding Route:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
 
 // get all bills
 app.get('/bills', async (req, res) => {
@@ -586,6 +635,17 @@ app.get('/bills', async (req, res) => {
         res.json(bills);
     } catch (err) {
         console.error("Error fetching bills:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// get all createmap
+app.get('/createmap', async (req, res) => {
+    try {
+        const createmap = await RouteView.find();
+        res.json(createmap);
+    } catch (err) {
+        console.error("Error fetching createmap:", err);
         res.status(500).json({ error: "Internal server error" });
     }
 });
@@ -600,6 +660,44 @@ app.get('/userInfo', async (req, res) => {
         console.error("Error fetching userInfo:", err);
         res.status(500).json({ error: "Internal server error" });
     }
+});
+
+
+// get sts info
+app.get('/stsInfo', async (req, res) => {
+    try {
+        const stsInfo = await Sts.find();
+        res.json(stsInfo);
+        console.log(stsInfo);
+    } catch (err) {
+        console.error("Error fetching stsInfo:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// get sts vehcile info
+app.get('/stsVehcileInfo', async (req, res) => {
+    try {
+        const stsVehcileInfo = await StsVehcile.find();
+        res.json(stsVehcileInfo);
+        console.log(stsVehcileInfo);
+    } catch (err) {
+        console.error("Error fetching stsVehcileInfo:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// get all bills
+app.get('/stsinfo', async (req, res) => {
+    const stslists = await Sts.findOne();
+    res.send(stslists);
+});
+
+app.get('/stsinfo/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const sts = await Sts.findOne(query);
+    res.send(sts);
 });
 
 
