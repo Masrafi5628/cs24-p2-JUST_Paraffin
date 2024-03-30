@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UserLogout = () => {
     const [userData, setUserData] = useState("");
-    // const [admin, setAdmin] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("http://localhost:5000/userData", {
+        fetch("http://localhost:5000/profile", {
             method: "POST",
             crossDomain: true,
             headers: {
@@ -24,7 +25,7 @@ const UserLogout = () => {
                 if (data.data === "token expired") {
                     alert("Session Expired");
                     window.localStorage.clear();
-                    window.location.href = "/";
+                    navigate('/');
                 }
             });
     }, []);

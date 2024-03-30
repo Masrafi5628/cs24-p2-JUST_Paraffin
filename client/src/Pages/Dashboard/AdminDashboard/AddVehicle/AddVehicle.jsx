@@ -8,71 +8,69 @@ const AddVehicle = () => {
     const [fuelCostLoaded, setFuelCostLoaded] = useState('');
     const [fuelCostUnloaded, setFuelCostUnLoaded] = useState('');
 
-
-
-    const handleVehicleSubmit = (e) => {
+    const handleVehicleSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:5000/vehicles', {
-            registrationNumber: registrationNumber,
-            type: type,
-            capacity: capacity,
-            fuelCostLoaded: fuelCostLoaded,
-            fuelCostUnloaded: fuelCostUnloaded
-        })
-            .then(res => {
-                if (res.data.status === 'ok') {
-                    alert('Vehicle Added Successfully');
-                }
+        try {
+            const response = await axios.post('http://localhost:5000/vehicles', {
+                registrationNumber,
+                type,
+                capacity,
+                fuelCostLoaded,
+                fuelCostUnloaded
+            });
 
-            })
-            .catch(err => {
-                console.log(err);
-            })
-
+            if (response.data.status === 'ok') {
+                alert('Vehicle Added Successfully');
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
+
     return (
-        <div>
-            <div className="max-w-96 mx-auto py-20">
-                <h2 className="text-3xl mx-auto mb-10 text-center">Add Vehicle</h2>
-                <form onSubmit={handleVehicleSubmit}>
-                    <div className="flex flex-col gap-3">
-                        <input
-                            type="text"
-                            placeholder="Registration Number"
-                            onChange={(e) => setRegistrationNumber(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Type"
-                            onChange={(e) => setType(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Capacity"
-                            onChange={(e) => setCapacity(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Fuel Cost Loaded"
-                            onChange={(e) => setFuelCostLoaded(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Fuel Cost Unloaded"
-                            onChange={(e) => setFuelCostUnLoaded(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <button type="submit" className="btn btn-primary">
-                            Add Vehicle
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div className="max-w-md mx-auto py-20">
+            <h2 className="text-3xl mb-10 text-center font-bold">Add Vehicle</h2>
+            <form onSubmit={handleVehicleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <input
+                    type="text"
+                    placeholder="Registration Number"
+                    required
+                    onChange={(e) => setRegistrationNumber(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                />
+                <input
+                    type="text"
+                    placeholder="Type"
+                    required
+                    onChange={(e) => setType(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                />
+                <input
+                    type="text"
+                    required
+                    placeholder="Capacity"
+                    onChange={(e) => setCapacity(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                />
+                <input
+                    type="text"
+                    placeholder="Fuel Cost Loaded"
+                    required
+                    onChange={(e) => setFuelCostLoaded(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                />
+                <input
+                    type="text"
+                    placeholder="Fuel Cost Unloaded"
+                    onChange={(e) => setFuelCostUnLoaded(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                    required
+                />
+                <button type="submit" className="btn btn-primary w-full">
+                    Add Vehicle
+                </button>
+            </form>
         </div>
     );
 };

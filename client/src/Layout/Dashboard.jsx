@@ -26,9 +26,7 @@ const Dashboard = () => {
                 <ul className="menu">
                     <li><NavLink to="/dashboard/addlandfill">Add Landfill Sites</NavLink></li>
                 </ul>
-                {/* <ul className="menu">
-                    <li><NavLink to="/dashboard/rolemanage">Role Manage</NavLink></li>
-                </ul> */}
+
 
             </div>
             <div className="w-full p-10">

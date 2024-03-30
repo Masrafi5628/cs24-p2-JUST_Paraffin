@@ -31,6 +31,7 @@ import AddEntryTruck from "../Pages/Dashboard/LandfillDashboard/AddEntryTrack/Ad
 import StsAddVehicle from "../Pages/Dashboard/StsDashboard/AddVehicle/StsAddVehicle";
 import CreateBill from "../Pages/Dashboard/LandfillDashboard/CreateBill/CreateBill";
 import ViewGenerate from "../Pages/Dashboard/LandfillDashboard/ViewGenerate/ViewGenerate";
+import UpdateLandfillDetail from "../Pages/Dashboard/LandfillDashboard/UpdateLandfillDetails/UpdateLandfillDetail";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -165,6 +166,11 @@ export const router = createBrowserRouter([
             {
                 path: "createbillpage",
                 element: <ViewGenerate></ViewGenerate>
+            },
+            {
+                path: "profile/:id",
+                element: <UpdateLandfillDetail></UpdateLandfillDetail>,
+                loader: ({ params }) => fetch(`http://localhost:5000/profile/${params.id}`)
             }
         ]
     }

@@ -55,13 +55,13 @@ const CreateBill = () => {
 
     return (
         <div>
-            <form onSubmit={handleOneSubmit}>
+            <form onSubmit={handleOneSubmit} className="f-flex flex-col max-w-screen-md mx-auto">
                 <input
                     value={registrationNumber}
                     onChange={(e) => SetRegistrationNumber(e.target.value)}
                     type="text"
                     placeholder="Vehicle Number"
-                    className="input input-bordered w-full"
+                    className="input input-bordered w-full mb-3"
                 // required
                 />
                 <input
@@ -69,7 +69,7 @@ const CreateBill = () => {
                     onChange={(e) => setWasteVolume(e.target.value)}
                     type="text"
                     placeholder="Waste Volume"
-                    className="input input-bordered w-full"
+                    className="input input-bordered w-full  mb-3"
                 // required
                 />
                 <input
@@ -77,7 +77,7 @@ const CreateBill = () => {
                     onChange={(e) => setDistance(e.target.value)}
                     type="text"
                     placeholder="Distance"
-                    className="input input-bordered w-full"
+                    className="input input-bordered  mb-3 w-full"
                 // required
                 />
                 <input
@@ -85,7 +85,7 @@ const CreateBill = () => {
                     onChange={(e) => setDepartureLocation(e.target.value)}
                     type="text"
                     placeholder="Departure Location"
-                    className="input input-bordered w-full"
+                    className="input input-bordered  mb-3 w-full"
                 // required
                 />
                 <input
@@ -93,7 +93,7 @@ const CreateBill = () => {
                     onChange={(e) => setArrivalLocation(e.target.value)}
                     type="text"
                     placeholder="Arrival Location"
-                    className="input input-bordered w-full"
+                    className="input input-bordered  mb-3 w-full"
                 // required
                 />
 

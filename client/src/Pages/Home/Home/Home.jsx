@@ -1,9 +1,11 @@
-import './Home.css';
+import React from 'react';
 
 const Home = () => {
     return (
-        <div className="home">
-            <h1 className='text-7xl text-center'>This is Our Public Page</h1>
+        <div >
+
+
+
         </div>
     );
 };

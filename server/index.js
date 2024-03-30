@@ -99,29 +99,77 @@ app.post("/auth/login", async (req, res) => {
 });
 
 
-app.post("/userData", async (req, res) => {
+// app.post("/userData", async (req, res) => {
+//     const { token } = req.body;
+//     try {
+//         const user = jwt.verify(token, JWT_SECRET, (err, res) => {
+//             if (err) {
+//                 return "token expired";
+//             }
+//             return res;
+//         });
+//         console.log(user);
+//         if (user == "token expired") {
+//             return res.send({ status: "error", data: "token expired" });
+//         }
+
+//         const useremail = user.email;
+//         User.findOne({ email: useremail })
+//             .then((data) => {
+//                 res.send({ status: "ok", data: data });
+//             })
+//             .catch((error) => {
+//                 res.send({ status: "error", data: error });
+//             });
+//     } catch (error) { }
+// });
+
+app.post("/profile", async (req, res) => {
     const { token } = req.body;
     try {
-        const user = jwt.verify(token, JWT_SECRET, (err, res) => {
-            if (err) {
-                return "token expired";
-            }
-            return res;
-        });
+        const user = jwt.verify(token, JWT_SECRET);
         console.log(user);
-        if (user == "token expired") {
-            return res.send({ status: "error", data: "token expired" });
-        }
 
-        const useremail = user.email;
-        User.findOne({ email: useremail })
-            .then((data) => {
-                res.send({ status: "ok", data: data });
-            })
-            .catch((error) => {
-                res.send({ status: "error", data: error });
-            });
-    } catch (error) { }
+        // If token is expired, send a specific error response
+        if (user) {
+            const useremail = user.email;
+            User.findOne({ email: useremail })
+                .then((data) => {
+                    res.send({ status: "ok", data: data });
+                })
+                .catch((error) => {
+                    res.send({ status: "error", data: error });
+                });
+        } else {
+            res.status(401).send({ status: "error", message: "Token expired" });
+        }
+    } catch (error) {
+        res.status(500).send({ status: "error", message: "Internal server error" });
+    }
+});
+
+// get specific user updateptofile
+app.get('/profile/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await User.findOne(query);
+    res.send(user);
+});
+
+// update user details api
+app.put('/profile/:id', async (req, res) => {
+    const id = req.params.id;
+    const updateUser = req.body;
+    const filer = { _id: new ObjectId(id) };
+    const options = { upsert: true };
+    const updateDoc = {
+        $set: {
+            username: updateUser.username,
+            email: updateUser.email,
+        },
+    };
+    const result = await User.updateOne(filer, updateDoc, options);
+    res.send(result);
 });
 
 
@@ -317,28 +365,103 @@ app.post('/vehicles', async (req, res) => {
 });
 
 // add sts post api
+// app.post('/sts', async (req, res) => {
+
+//     const { wardNumber, capacity, latitude, longitude } = req.body;
+//     try {
+//         const oldSts = await Sts.findOne({ wardNumber });
+
+//         if (oldSts) {
+//             return res.send({ status: "error", message: "sts already exists" });
+//         }
+//         await Sts.create({
+//             wardNumber,
+//             capacity,
+//             latitude,
+//             longitude,
+//             managers: managers || []
+//         });
+//         console.log({ status: "ok" });
+//         res.send({ status: "ok" });
+//     }
+//     catch (err) {
+//         console.log({ status: "error" });
+//     }
+// });
+
+// add Landfill post api
+// app.post('/sts', async (req, res) => {
+
+//     const { wardNumber, capacity, latitude, longitude, managers } = req.body;
+
+
+//     try {
+//         // Check if the landfill with the given name already exists
+//         const oldSts = await Sts.findOne({ wardNumber });
+//         if (oldSts) {
+//             return res.send({ status: "error", message: "STS already exists" });
+//         }
+
+//         // Create the new landfill with provided details
+//         const newSTS = await Sts.create({
+//             wardNumber,
+//             capacity,
+//             latitude,
+//             longitude,
+//             managers: managers || []
+
+//         });
+
+//         console.log({ status: "ok" });
+//         res.send({ status: "ok", data: newSTS });
+//     } catch (err) {
+//         console.error("Error creating STS:", err);
+//         res.status(500).send({ status: "error", message: "Internal server error" });
+//     }
+// });
 app.post('/sts', async (req, res) => {
+    const { wardNumber, capacity, latitude, longitude, managers, trucks } = req.body;
 
-    const { wardNumber, capacity, latitude, longitude } = req.body;
     try {
-        const oldSts = await Sts.findOne({ wardNumber });
-
-        if (oldSts) {
-            return res.send({ status: "error", message: "sts already exists" });
+        // Check if required fields are present
+        if (!wardNumber || !capacity || !latitude || !longitude) {
+            return res.status(400).send({ status: "error", message: "Please provide all required fields" });
         }
-        await Sts.create({
+
+        // Check if trucks array is provided and if it's not empty
+        if (!Array.isArray(trucks) || trucks.length === 0) {
+            return res.status(400).send({ status: "error", message: "Please provide at least one truck" });
+        }
+
+        // Check if truck objects have required fields
+        for (const truck of trucks) {
+            if (!truck.truckNumber || !truck.capacity) {
+                return res.status(400).send({ status: "error", message: "Each truck must have a truck number and capacity" });
+            }
+        }
+
+        // Create the new STS with provided details
+        const newSTS = await Sts.create({
             wardNumber,
             capacity,
             latitude,
-            longitude
+            longitude,
+            managers: managers || [],
+            trucks: trucks || []
         });
+
         console.log({ status: "ok" });
-        res.send({ status: "ok" });
-    }
-    catch (err) {
-        console.log({ status: "error" });
+        res.status(201).send({ status: "ok", data: newSTS });
+    } catch (err) {
+        console.error("Error creating STS:", err);
+        let message = "An error occurred while processing your request.";
+        if (err.message.includes("duplicate key error")) {
+            message = "This STS already exists.";
+        }
+        res.status(500).send({ status: "error", message });
     }
 });
+
 
 // add Landfill post api
 app.post('/landfill', async (req, res) => {
@@ -450,35 +573,7 @@ app.post('/stsvehicleadd', async (req, res) => {
     }
 });
 
-// app post create bill for vehicle + wast time
-
-// app.post('/createbill', async (req, res) => {
-//     const { vehicleNumber, wasteVolume } = req.body;
-//     const oldStsId = await Vehicle.findOne({ vehicleNumber });
-//     const capacity = oldStsId.capacity;
-//     const fuelCostLoaded = oldStsId.fuelCostLoaded;
-//     const fuelCostUnloaded = oldStsId.fuelCostUnloaded;
-//     const cost = fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded));
-//     try {
-//         await BillDetails.create({
-//             vehicleNumber,
-//             wasteVolume,
-//             billAmount: cost
-//         });
-//         res.status(201).json({ status: "ok", message: "Bill added successfully" });
-//     } catch (err) {
-//         console.error("Error adding Bill:", err);
-//         res.status(500).json({ status: "error", message: "Internal server error" });
-//     }
-
-// });
-// app.get('/createbill', async (req, res) => {
-//     const { vehicleNumber, wasteVolume } = req.body;
-//     const oldStsId = await Vehicle.findOne({ vehicleNumber });
-//     // res.send(oldStsId);
-//     res.send({ capacity: oldStsId.capacity, fuelCostLoaded: oldStsId.fuelCostLoaded, fuelCostUnloaded: oldStsId.fuelCostUnloaded });
-// });
-
+//
 
 
 app.post('/createbill', async (req, res) => {
@@ -533,6 +628,17 @@ app.get('/bills', async (req, res) => {
     }
 });
 
+//get all userinfo from User collection
+app.get('/userInfo', async (req, res) => {
+    try {
+        const userInfo = await User.find();
+        res.json(userInfo);
+        console.log(userInfo);
+    } catch (err) {
+        console.error("Error fetching userInfo:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 

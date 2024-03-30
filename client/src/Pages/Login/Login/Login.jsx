@@ -23,15 +23,23 @@ const Login = () => {
                 const userType = data.userType.toLowerCase();
                 switch (userType) {
                     case 'system admin':
+                        alert("Login successful");
+                        window.localStorage.setItem("token", data.data);
                         navigate('/dashboard/systemwelcome');
                         break;
                     case 'sts manager':
+                        alert("Login successful");
+                        window.localStorage.setItem("token", data.data);
                         navigate('/stsdashboard/stsmanager');
                         break;
                     case 'landfill manager':
+                        alert("Login successful");
+                        window.localStorage.setItem("token", data.data);
                         navigate('/landfilldashboard/landfillmanager');
                         break;
                     default:
+                        alert("Login successful");
+                        window.localStorage.setItem("token", data.data);
                         navigate('/userdashboard/userwelcome');
                         break;
                 }
@@ -45,24 +53,36 @@ const Login = () => {
     };
 
     return (
-        <div className="max-w-96 mx-auto py-20">
-            <h2 className="text-3xl mx-auto mb-10 text-center">Login Page</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-3">
+        <div className="max-w-md mx-auto py-20">
+            <h2 className="text-3xl mb-6 text-center font-bold">Login Page</h2>
+            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                        Email
+                    </label>
                     <input
+                        id="email"
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Email"
-                        className="input input-bordered w-full"
+                        className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline"
                     />
+                </div>
+                <div className="mb-6">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                        Password
+                    </label>
                     <input
+                        id="password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
-                        className="input input-bordered w-full"
+                        className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline"
                     />
+                </div>
+                <div className="flex items-center justify-between">
                     <button type="submit" className="btn btn-primary">
                         Sign In
                     </button>
@@ -73,117 +93,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// const Login = () => {
-//     const [email, setEmail] = useState('');
-//     const [password, setPassword] = useState('');
-//     const [userType, setUserType] = useState("");
-//     const navigate = useNavigate();
-
-//     const handleSubmit = (e) => {
-//         console.log(userType.toLowerCase());
-
-
-//         e.preventDefault();
-
-//         fetch("http://localhost:5000/auth/login", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({
-//                 email,
-//                 password,
-//                 userType
-//             }),
-//         })
-//             .then((res) => res.json())
-//             .then((data) => {
-//                 if (data.status === "ok") {
-//                     alert("Login successful");
-//                     window.localStorage.setItem("token", data.data);
-//                     window.localStorage.setItem("loggedIn", true);
-//                     navigate("/userdashboard/userwelcome");
-//                 } else {
-//                     // Login failed, show alert
-//                     alert("Incorrect email or password. Please try again.");
-//                 }
-//             })
-//             .catch((error) => {
-//                 console.error("Error:", error);
-//                 // Handle other errors, such as network issues
-//                 alert("An error occurred. Please try again later.");
-//             });
-//     };
-
-//     return (
-//         <div className="max-w-96 mx-auto py-20">
-//             <h2 className="text-3xl mx-auto mb-10 text-center">Login Page</h2>
-//             <form onSubmit={handleSubmit}>
-//                 {/* <div>
-//                     Create As <br />
-//                     <input
-//                         type="radio"
-//                         name="UserType"
-//                         value="System Admin"
-//                         onChange={(e) => setUserType(e.target.value)}
-//                     />
-//                     System Admin
-//                     <input
-//                         type="radio"
-//                         name="UserType"
-//                         value="Sts Manager"
-//                         onChange={(e) => setUserType(e.target.value)}
-//                     />
-//                     Sts Manager
-//                     <input
-//                         type="radio"
-//                         name="UserType"
-//                         value="Landfil Manager"
-//                         onChange={(e) => setUserType(e.target.value)}
-//                     />
-//                     Landfil Manager
-//                 </div> */}
-//                 <div className="flex flex-col gap-3">
-//                     <input
-//                         type="text"
-//                         value={email}
-//                         onChange={(e) => setEmail(e.target.value)}
-//                         placeholder="Email"
-//                         className="input input-bordered w-full"
-//                     />
-//                     <input
-//                         type="password"
-//                         value={password}
-//                         onChange={(e) => setPassword(e.target.value)}
-//                         placeholder="Password"
-//                         className="input input-bordered w-full"
-//                     />
-//                     <button type="submit" className="btn btn-primary">
-//                         Sign In
-//                     </button>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default Login;
