@@ -86,7 +86,7 @@ app.post("/auth/login", async (req, res) => {
     }
     if (await bcrypt.compare(password, user.password)) {
         const token = jwt.sign({ email: user.email }, JWT_SECRET, {
-            expiresIn: "5m",
+            expiresIn: "10d",
         });
 
         if (res.status(201)) {
@@ -269,7 +269,6 @@ app.get('/users', async (req, res) => {
 
 
 // delete specific user
-// delete order api
 app.delete('/users/:id', async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
@@ -364,61 +363,9 @@ app.post('/vehicles', async (req, res) => {
     }
 });
 
-// add sts post api
-// app.post('/sts', async (req, res) => {
-
-//     const { wardNumber, capacity, latitude, longitude } = req.body;
-//     try {
-//         const oldSts = await Sts.findOne({ wardNumber });
-
-//         if (oldSts) {
-//             return res.send({ status: "error", message: "sts already exists" });
-//         }
-//         await Sts.create({
-//             wardNumber,
-//             capacity,
-//             latitude,
-//             longitude,
-//             managers: managers || []
-//         });
-//         console.log({ status: "ok" });
-//         res.send({ status: "ok" });
-//     }
-//     catch (err) {
-//         console.log({ status: "error" });
-//     }
-// });
-
-// add Landfill post api
-// app.post('/sts', async (req, res) => {
-
-//     const { wardNumber, capacity, latitude, longitude, managers } = req.body;
 
 
-//     try {
-//         // Check if the landfill with the given name already exists
-//         const oldSts = await Sts.findOne({ wardNumber });
-//         if (oldSts) {
-//             return res.send({ status: "error", message: "STS already exists" });
-//         }
 
-//         // Create the new landfill with provided details
-//         const newSTS = await Sts.create({
-//             wardNumber,
-//             capacity,
-//             latitude,
-//             longitude,
-//             managers: managers || []
-
-//         });
-
-//         console.log({ status: "ok" });
-//         res.send({ status: "ok", data: newSTS });
-//     } catch (err) {
-//         console.error("Error creating STS:", err);
-//         res.status(500).send({ status: "error", message: "Internal server error" });
-//     }
-// });
 app.post('/sts', async (req, res) => {
     const { wardNumber, capacity, latitude, longitude, managers, trucks } = req.body;
 

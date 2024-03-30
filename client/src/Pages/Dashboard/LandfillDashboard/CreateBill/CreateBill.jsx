@@ -60,7 +60,7 @@ const CreateBill = () => {
                     type="text"
                     placeholder="Vehicle Number"
                     className="input input-bordered w-full mb-3"
-                // required
+                    required
                 />
                 <input
                     value={wasteVolume}
@@ -68,24 +68,24 @@ const CreateBill = () => {
                     type="text"
                     placeholder="Waste Volume"
                     className="input input-bordered w-full  mb-3"
-                // required
+                    required
                 />
 
                 <input
                     value={departureLocation}
                     onChange={(e) => setDepartureLocation(e.target.value)}
                     type="text"
-                    placeholder="Departure Location"
+                    placeholder="Departure Location(Radian)"
                     className="input input-bordered  mb-3 w-full"
-                // required
+                    required
                 />
                 <input
                     value={arrivalLocation}
                     onChange={(e) => setArrivalLocation(e.target.value)}
                     type="text"
-                    placeholder="Arrival Location"
+                    placeholder="Arrival Location (Radian)"
                     className="input input-bordered  mb-3 w-full"
-                // required
+                    required
                 />
 
                 <button type="submit" className="btn btn-primary">

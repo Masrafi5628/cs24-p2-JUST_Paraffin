@@ -32,6 +32,9 @@ import StsAddVehicle from "../Pages/Dashboard/StsDashboard/AddVehicle/StsAddVehi
 import CreateBill from "../Pages/Dashboard/LandfillDashboard/CreateBill/CreateBill";
 import ViewGenerate from "../Pages/Dashboard/LandfillDashboard/ViewGenerate/ViewGenerate";
 import UpdateLandfillDetail from "../Pages/Dashboard/LandfillDashboard/UpdateLandfillDetails/UpdateLandfillDetail";
+import AdminProfileUpdate from "../Pages/Dashboard/AdminDashboard/AdminProfileUpdate/AdminProfileUpdate";
+import StsProfileUpdate from "../Pages/Dashboard/StsDashboard/StsProfileUpdate/StsProfileUpdate";
+import UserProfileUpdate from "../Pages/Dashboard/UserDashboard/UserProfileUpdate/UserProfileUpdate";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -109,6 +112,12 @@ export const router = createBrowserRouter([
                 path: "assignmanager/:id",
                 element: <AssignManager></AssignManager>,
                 loader: ({ params }) => fetch(`http://localhost:5000/landfills/${params.id}`)
+            },
+            {
+                path: "profile/:id",
+                element: <AdminProfileUpdate></AdminProfileUpdate>,
+                loader: ({ params }) => fetch(`http://localhost:5000/profile/${params.id}`)
+
             }
         ]
     },
@@ -128,6 +137,12 @@ export const router = createBrowserRouter([
             {
                 path: "resetpassword",
                 element: <UserResetPassword></UserResetPassword>
+            },
+            {
+                path: "profile/:id",
+                element: <UserProfileUpdate></UserProfileUpdate>,
+                loader: ({ params }) => fetch(`http://localhost:5000/users/${params.id}`)
+
             }
         ]
     },
@@ -143,6 +158,12 @@ export const router = createBrowserRouter([
             {
                 path: "addvehicle",
                 element: <StsAddVehicle></StsAddVehicle>
+            },
+            {
+                path: "profile/:id",
+                element: <StsProfileUpdate></StsProfileUpdate>,
+                loader: ({ params }) => fetch(`http://localhost:5000/profile/${params.id}`)
+
             }
         ]
     },
