@@ -51,7 +51,7 @@ const StsList = () => {
                     value={volumeOfWaste}
                     onChange={(e) => setVolumeOfWaste(e.target.value)}
                     type="text"
-                    placeholder="Departure Location"
+                    placeholder="Volume of Waste"
                     className="input input-bordered  mb-3 w-full"
                     required
                 />
