@@ -1,5 +1,5 @@
 # Use node.js as base image
-FROM node:latest
+FROM node:alpine
 
 # Set working directory
 WORKDIR /app
@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port
-EXPOSE 8000
+EXPOSE 5000
 
 # Command to run the server
-CMD ["npm", "index.js"]
+CMD ["nodemon", "index.js"]
