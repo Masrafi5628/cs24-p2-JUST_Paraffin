@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -86,8 +86,14 @@ const Login = () => {
                     <button type="submit" className="btn btn-primary">
                         Sign In
                     </button>
+                    <Link to='/resetpassword'>
+                        <p>Forgot Your Password?</p>
+                    </Link>
+
                 </div>
+
             </form>
+
         </div>
     );
 };

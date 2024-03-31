@@ -42,6 +42,10 @@ import AdminView from "../Pages/Dashboard/AdminDashboard/AdminView/AdminView";
 import AddminAllUserView from "../Pages/Dashboard/AdminDashboard/AdminAllUserView/AddminAllUserView";
 import FleetTruck from "../Pages/Dashboard/StsDashboard/FleetTruck/FleetTruck";
 import FleetTruckView from "../Pages/Dashboard/StsDashboard/FleetTruckView/FleetTruckView";
+import LogOut from "../Pages/Dashboard/StsDashboard/LogOut/LogOut";
+import LLogOut from "../Pages/Dashboard/LandfillDashboard/LLogOut/LLogOut";
+import ALogOut from "../Pages/Dashboard/AdminDashboard/ALogOut/ALogOut";
+import ResetPassword from "../Pages/Login/ResetPassword/ResetPassword";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -58,6 +62,10 @@ export const router = createBrowserRouter([
                 path: '/login',
                 element: <Login></Login>
             },
+            {
+                path: 'resetpassword',
+                element: <ResetPassword></ResetPassword>
+            }
 
 
 
@@ -133,6 +141,10 @@ export const router = createBrowserRouter([
             {
                 path: "alluserstatistics",
                 element: <AddminAllUserView></AddminAllUserView>
+            },
+            {
+                path: "logout",
+                element: <ALogOut></ALogOut>
             }
 
         ]
@@ -204,6 +216,10 @@ export const router = createBrowserRouter([
                 path: "fleetview",
                 element: <FleetTruckView></FleetTruckView>
 
+            },
+            {
+                path: "logout",
+                element: <LogOut></LogOut>
             }
 
         ]
@@ -233,7 +249,12 @@ export const router = createBrowserRouter([
                 path: "profile/:id",
                 element: <UpdateLandfillDetail></UpdateLandfillDetail>,
                 loader: ({ params }) => fetch(`http://localhost:5000/profile/${params.id}`)
+            },
+            {
+                path: "logout",
+                element: <LLogOut></LLogOut>
             }
+
         ]
     }
 

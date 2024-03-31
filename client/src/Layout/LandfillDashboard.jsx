@@ -14,6 +14,9 @@ const LandfillDashboard = () => {
                 <ul className="menu">
                     <li><NavLink to="/landfilldashboard/createbill">Create Bill</NavLink></li>
                 </ul>
+                <ul className="menu">
+                    <li><NavLink to="/landfilldashboard/logout">Log Out</NavLink></li>
+                </ul>
 
 
             </div>

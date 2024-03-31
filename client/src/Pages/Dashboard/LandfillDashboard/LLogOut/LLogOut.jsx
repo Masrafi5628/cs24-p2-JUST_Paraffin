@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const UserLogout = () => {
+const LLogOut = () => {
     const [userData, setUserData] = useState("");
     const navigate = useNavigate();
 
@@ -34,7 +34,6 @@ const UserLogout = () => {
         window.localStorage.clear();
         navigate('/');
     }
-
     return (
         <div className="container mx-auto my-8 px-4">
             <div className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden">
@@ -51,4 +50,4 @@ const UserLogout = () => {
     );
 };
 
-export default UserLogout;
+export default LLogOut;

@@ -181,6 +181,7 @@ app.post("/auth/reset-password/initiate", async (req, res) => {
     const { email } = req.body;
     try {
         const oldUser = await User.findOne({ email });
+        console.log(oldUser);
         if (!oldUser) {
             return res.json({ status: "User Not Exists!!" });
         }
@@ -197,15 +198,12 @@ app.post("/auth/reset-password/initiate", async (req, res) => {
                 pass: 'llfk rbtg eaws suss'
             }
         });
-
         var mailOptions = {
             from: 'test.service.working@gmail.com',
-            to: email, // Using the 'mail' variable here
+            to: oldUser.email, // Using the 'mail' variable here
             subject: 'Reset Password',
-            text: "Greetings " + username + "," + " Kindly click the following link for resetting your password - " + link,
+            text: `Click on the link to reset your password: ${link}`,
         };
-
-
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log(error);
@@ -213,6 +211,8 @@ app.post("/auth/reset-password/initiate", async (req, res) => {
                 console.log('Email sent: ' + info.response);
             }
         });
+
+
         console.log(link);
     } catch (error) { }
 });

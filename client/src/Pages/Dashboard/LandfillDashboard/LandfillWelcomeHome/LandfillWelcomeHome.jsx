@@ -41,7 +41,7 @@ const LandfillWelcomeHome = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl mb-6 text-center font-bold">User Profile</h2>
+            <h2 className="text-3xl mb-6 text-center font-bold"> Profile Details</h2>
             <div className="bg-white shadow-md rounded-lg px-8 py-6">
                 {userData && (
                     <>
