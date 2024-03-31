@@ -79,7 +79,7 @@ const FleetTruckView = () => {
         <div className="container mx-auto py-8">
             {fleetTruckDetails.length > 0 && (
                 <div className="overflow-x-auto">
-                    <h2 className="text-3xl font-bold mb-4 text-center mb-10 text-blue-700">Total Wast Volume: {volumeOfWaste}</h2>
+                    <h2 className="text-3xl font-bold  text-center mb-10 text-blue-700">Total Wast Volume: {volumeOfWaste}</h2>
                     <table className="table-auto w-full">
                         <thead>
                             <tr>

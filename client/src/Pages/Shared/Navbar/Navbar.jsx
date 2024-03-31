@@ -14,7 +14,7 @@ const Navbar = () => {
                 </div>
 
                 <Link to='/'>
-                    <a className="btn btn-ghost text-xl">Samurai</a>
+                    <a className="btn btn-ghost text-xl">EcoSync</a>
                 </Link>
             </div>
             <div className="navbar-center hidden lg:flex">
@@ -23,7 +23,7 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end gap-3">
-                <Link to="/login">  <a className="btn"> Login</a></Link>
+                <Link to="/login">  <a className="btn bg-blue-600 text-white hover:bg-sky-600"> Login</a></Link>
                 {/* <Link to="/dashboard/systemwelcome">  <a className="btn">Dashboard</a></Link>
                 <Link to="/userdashboard/userwelcome">  <a className="btn">User Dashboard</a></Link> */}
 

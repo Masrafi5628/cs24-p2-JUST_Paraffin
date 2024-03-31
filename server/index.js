@@ -103,30 +103,6 @@ app.post("/auth/login", async (req, res) => {
 });
 
 
-// app.post("/userData", async (req, res) => {
-//     const { token } = req.body;
-//     try {
-//         const user = jwt.verify(token, JWT_SECRET, (err, res) => {
-//             if (err) {
-//                 return "token expired";
-//             }
-//             return res;
-//         });
-//         console.log(user);
-//         if (user == "token expired") {
-//             return res.send({ status: "error", data: "token expired" });
-//         }
-
-//         const useremail = user.email;
-//         User.findOne({ email: useremail })
-//             .then((data) => {
-//                 res.send({ status: "ok", data: data });
-//             })
-//             .catch((error) => {
-//                 res.send({ status: "error", data: error });
-//             });
-//     } catch (error) { }
-// });
 
 app.post("/profile", async (req, res) => {
     const { token } = req.body;
@@ -527,7 +503,7 @@ app.post('/stsvehicleadd', async (req, res) => {
     }
 });
 
-//
+
 
 
 app.post('/createbill', async (req, res) => {
@@ -749,47 +725,6 @@ app.get('/allusers', async (req, res) => {
     res.send(users);
 });
 
-// fleet truck post api
-// app.post('/fleettruck', async (req, res) => {
-//     const { volumeOfWaste } = req.body;
-//     try {
-//         const vehicles = await Vehicle.find({});
-
-
-//         for (const vehicle of vehicles) {
-//             // Define cost variable here
-//             let ratio = 0; // Default ratio value
-//             if (vehicle.capacity !== 0 && vehicle.capacity !== undefined) {
-//                 ratio = (vehicle.fuelCostUnloaded + (vehicle.fuelCostLoaded - vehicle.fuelCostUnloaded)) / vehicle.capacity;
-
-//             }
-
-//             if (!volumeOfWaste || isNaN(volumeOfWaste)) {
-//                 return res.status(400).json({ status: "error", message: "Invalid input data or missing volume of waste" });
-//             }
-//             if (!cost || isNaN(cost)) {
-//                 return res.status(400).json({ status: "error", message: "Invalid input data or missing cost" });
-//             }
-//             if (!ratio || isNaN(ratio)) {
-//                 return res.status(400).json({ status: "error", message: "Invalid input data or missing ratio" });
-//             }
-
-
-//             await FleetTruck.create({
-//                 registrationNumber: vehicle.registrationNumber,
-//                 capacity: vehicle.capacity,
-//                 Ratio: ratio,
-//                 volumeOfWaste: volumeOfWaste
-//             });
-
-
-//         }
-//         res.status(201).json({ status: "ok", message: "fleet  added successfully" });
-//     } catch (err) {
-//         console.error("Error adding Route:", err);
-//         res.status(500).json({ status: "error", message: "Internal server error" });
-//     }
-// });
 
 app.post('/fleettruck', async (req, res) => {
     const { volumeOfWaste } = req.body;
@@ -844,4 +779,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-

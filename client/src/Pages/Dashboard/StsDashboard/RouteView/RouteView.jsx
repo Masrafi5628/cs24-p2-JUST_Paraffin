@@ -3,7 +3,7 @@ import React from 'react';
 const RouteView = () => {
     return (
         <div>
-            <h1>gwqer</h1>
+            <h1>Role</h1>
         </div>
     );
 };

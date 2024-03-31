@@ -8,70 +8,69 @@ const AddEntryTruck = () => {
     const [timeofDeparture, setTimeofDeparture] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleOneSubmit = (e) => {
+    const handleOneSubmit = async (e) => {
         e.preventDefault();
 
-        axios.post('http://localhost:5000/addtruck', {
-            truckNumber: truckNumber,
-            weightofWaste: weightofWaste,
-            timeofArrival: timeofArrival,
-            timeofDeparture: timeofDeparture,
-        })
-            .then(res => {
-                if (res.data.status === 'ok') {
-                    alert('Truck Added Successfully');
-                }
-            })
-            .catch(err => {
-                if (err.response && err.response.data && err.response.data.message) {
-                    setErrorMessage(err.response.data.message);
-                } else {
-                    setErrorMessage('An error occurred while adding the truck');
-                }
+        try {
+            const response = await axios.post('http://localhost:5000/addtruck', {
+                truckNumber,
+                weightofWaste,
+                timeofArrival,
+                timeofDeparture,
             });
+            if (response.data.status === 'ok') {
+                alert('Truck Added Successfully');
+            }
+        } catch (err) {
+            if (err.response && err.response.data && err.response.data.message) {
+                setErrorMessage(err.response.data.message);
+            } else {
+                setErrorMessage('An error occurred while adding the truck');
+            }
+        }
     }
 
     return (
-        <div>
-            <div className="max-w-96 mx-auto py-20">
-                <h2 className="text-3xl mx-auto mb-10 text-center">Add Truck</h2>
-                <form onSubmit={handleOneSubmit}>
-                    <div className="flex flex-col gap-3">
-                        <input
-                            type="text"
-                            placeholder="Truck Number"
-                            value={truckNumber}
-                            onChange={(e) => setTruckNumber(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Weight of Waste"
-                            value={weightofWaste}
-                            onChange={(e) => setWeightofWaste(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Time of Arrival"
-                            value={timeofArrival}
-                            onChange={(e) => setTimeofArrival(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            placeholder="Time of Departure"
-                            value={timeofDeparture}
-                            onChange={(e) => setTimeofDeparture(e.target.value)}
-                            className="input input-bordered w-full"
-                        />
-                        <button type="submit" className="btn btn-primary">
-                            Add Vehicle
-                        </button>
-                        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-                    </div>
-                </form>
-            </div>
+        <div className="max-w-xl mx-auto p-6 bg-gray-100 rounded-lg shadow-lg">
+            <h2 className="text-3xl mb-6 text-center">Add Truck</h2>
+            <form onSubmit={handleOneSubmit} className="space-y-4 space-x-4">
+                <input
+                    type="text"
+                    placeholder="Truck Number"
+                    value={truckNumber}
+                    onChange={(e) => setTruckNumber(e.target.value)}
+                    className="input"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Weight of Waste"
+                    value={weightofWaste}
+                    onChange={(e) => setWeightofWaste(e.target.value)}
+                    className="input"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Time of Arrival"
+                    value={timeofArrival}
+                    onChange={(e) => setTimeofArrival(e.target.value)}
+                    className="input"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Time of Departure"
+                    value={timeofDeparture}
+                    onChange={(e) => setTimeofDeparture(e.target.value)}
+                    className="input"
+                    required
+                />
+                <button type="submit" className="btn btn-primary w-full">
+                    Add Vehicle
+                </button>
+                {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+            </form>
         </div>
     );
 };

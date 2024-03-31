@@ -13,7 +13,7 @@ const StsList = () => {
     const handleOneSubmit = (e) => {
         e.preventDefault();
 
-        // console.log(departureLocation, arrivalLocation);
+
 
         // Make API call to create bill
         axios.post('http://localhost:5000/fleettruck', {
