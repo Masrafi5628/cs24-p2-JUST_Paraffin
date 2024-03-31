@@ -36,9 +36,9 @@ const AdminView = () => {
             const newDoughnutChart = new Chart(doughnutCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Total Waste Volume'],
+                    labels: ['Total Waste Dumped'],
                     datasets: [{
-                        label: 'Waste Volume',
+                        label: 'Dumped Waste Weight(Tonnes) ',
                         data: [totalWasteVolume],
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.5)', // Red

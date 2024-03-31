@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  backend:
+    build: 
+      context: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - JWT_SECRET=secret
+      - DB_USERNAME=ecosyncDB
+      - DB_PASSWORD=3eoJKDvLddqXBw3h
+      - EXPIRES_IN=50d
+    env_file:
+      - ./server/.env 
+    volumes:
+      - ./server:/app/server
+      - ./frontend:/app/frontend
+    depends_on:
+      - mongo
+
+  frontend:
+    build: 
+      context: ./client
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    restart: on-failure
+    depends_on:
+      - backend
+    command: npm run dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=ecosyncDB
+      - MONGO_INITDB_ROOT_PASSWORD=3eoJKDvLddqXBw3h
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
