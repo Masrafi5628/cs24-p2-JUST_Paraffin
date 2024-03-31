@@ -11,12 +11,11 @@ services:
       - JWT_SECRET=secret
       - DB_USERNAME=ecosyncDB
       - DB_PASSWORD=3eoJKDvLddqXBw3h
-      - EXPIRES_IN=50d
+      - EXPIRES_IN=5d
     env_file:
       - ./server/.env 
     volumes:
       - ./server:/app/server
-      - ./frontend:/app/frontend
     depends_on:
       - mongo
 
