@@ -6,6 +6,9 @@ const Dashboard = () => {
         <div className="flex">
             <div className="w-64 h-screen bg-orange-400">
                 <ul className="menu">
+                    <li><NavLink to="/dashboard/adminview">Statistic Dashboard</NavLink></li>
+                </ul>
+                <ul className="menu">
                     <li><NavLink to="/dashboard/systemwelcome">Admin Home</NavLink></li>
                 </ul>
                 <ul className="menu">

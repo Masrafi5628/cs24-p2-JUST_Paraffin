@@ -585,6 +585,28 @@ app.post('/createbill', async (req, res) => {
         res.status(500).json({ status: "error", message: "Internal server error" });
     }
 });
+// get total wastvolume fromt billdetails
+app.get('/totalwaste', async (req, res) => {
+    try {
+        const totalWasteAggregate = await BillDetails.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalWasteVolume: { $sum: "$wasteVolume" }
+                }
+            }
+        ]);
+
+        // Extract the total waste volume from the aggregation result
+        const totalWasteVolume = totalWasteAggregate.length > 0 ? totalWasteAggregate[0].totalWasteVolume : 0;
+
+        res.json({ totalWasteVolume });
+    } catch (error) {
+        console.error("Error fetching total waste volume:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 
 // post route-view
 app.post('/route-view', async (req, res) => {
@@ -701,7 +723,23 @@ app.get('/stsinfo/:id', async (req, res) => {
 });
 
 
-
+// get all user, landfill manager, sts manager from users individual count api 
+app.get('/usercount', async (req, res) => {
+    try {
+        const userCount = await User.countDocuments({});
+        const landfillManagerCount = await User.countDocuments({ userType: "Landfill Manager" });
+        const stsManagerCount = await User.countDocuments({ userType: "Sts Manager" });
+        res.send({ userCount, landfillManagerCount, stsManagerCount });
+    } catch (err) {
+        console.error("Error fetching user counts:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+// all get api for all users
+app.get('/allusers', async (req, res) => {
+    const users = await User.find();
+    res.send(users);
+});
 
 
 

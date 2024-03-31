@@ -38,6 +38,8 @@ import UserProfileUpdate from "../Pages/Dashboard/UserDashboard/UserProfileUpdat
 import StsRouteView from "../Pages/Dashboard/StsDashboard/StsRouteView/StsRouteView";
 import StsList from "../Pages/Dashboard/StsDashboard/StsList/StsList";
 import CreateMapPage from "../Pages/Dashboard/StsDashboard/CreateMapPage/CreateMapPage";
+import AdminView from "../Pages/Dashboard/AdminDashboard/AdminView/AdminView";
+import AddminAllUserView from "../Pages/Dashboard/AdminDashboard/AdminAllUserView/AddminAllUserView";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -63,6 +65,11 @@ export const router = createBrowserRouter([
         path: "dashboard",
         element: <Dashboard></Dashboard>,
         children: [
+            {
+                path: "adminview",
+                element: <AdminView></AdminView>,
+
+            },
             {
                 path: "systemwelcome",
                 element: <AdminWelcomeHome></AdminWelcomeHome>
@@ -120,8 +127,12 @@ export const router = createBrowserRouter([
                 path: "profile/:id",
                 element: <AdminProfileUpdate></AdminProfileUpdate>,
                 loader: ({ params }) => fetch(`http://localhost:5000/profile/${params.id}`)
-
+            },
+            {
+                path: "alluserstatistics",
+                element: <AddminAllUserView></AddminAllUserView>
             }
+
         ]
     },
     {
