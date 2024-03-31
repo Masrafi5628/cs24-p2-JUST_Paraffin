@@ -43,6 +43,7 @@ require('./trcukAdd');
 require('./stsAddVehcile');
 require('./billGenerate');
 require('./route-view');
+require('./fleetTruck');
 const User = mongoose.model('userInfo');
 const Vehicle = mongoose.model('vehiclesInfo');
 const Sts = mongoose.model('stsInfo');
@@ -51,6 +52,7 @@ const Truck = mongoose.model('trucksInfo');
 const StsVehcile = mongoose.model('stsvehcileInfo');
 const BillDetails = mongoose.model('BillDetails');
 const RouteView = mongoose.model('routeview');
+const FleetTruck = mongoose.model('fleeTruckInfo');
 
 
 
@@ -415,7 +417,7 @@ app.post('/sts', async (req, res) => {
 
 // add Landfill post api
 app.post('/landfill', async (req, res) => {
-    const { name, capacity, operationalTimespan, latitude, longitude, managers } = req.body;
+    const { name, capacity, operationalTimespan, latitude, longitude, latitudeRad, longitudeRad, managers } = req.body;
 
     try {
         // Check if the landfill with the given name already exists
@@ -431,6 +433,8 @@ app.post('/landfill', async (req, res) => {
             operationalTimespan,
             latitude,
             longitude,
+            latitudeRad,
+            longitudeRad,
             managers: managers || [] // Initialize managers as an empty array if not provided
         });
 
@@ -548,8 +552,8 @@ app.post('/createbill', async (req, res) => {
 
         // Extract the required details from the vehicle object
         const { capacity, fuelCostLoaded, fuelCostUnloaded } = vehicle;
-        const { longitude: longitude11, latitude: latitude12 } = loc_1;
-        const { longitude: longitude21, latitude: latitude22 } = loc_2;
+        const { longitudeRad: longitude11, latitudeRad: latitude12 } = loc_1;
+        const { longitudeRad: longitude21, latitudeRad: latitude22 } = loc_2;
 
         // Check if any of the required details are missing or not a number
         if (!capacity || isNaN(capacity) || !fuelCostLoaded || isNaN(fuelCostLoaded) || !fuelCostUnloaded || isNaN(fuelCostUnloaded) || isNaN(wasteVolume)) {
@@ -559,14 +563,18 @@ app.post('/createbill', async (req, res) => {
             return res.status(400).json({ status: "error", message: "Invalid input data or missing location details" });
         }
 
-        longitude11 = longitude11 * Math.PI / 180;
-        latitude12 = latitude12 * Math.PI / 180;
-        longitude21 = longitude21 * Math.PI / 180;
-        latitude22 = latitude22 * Math.PI / 180;
-
+        console.log(longitude11, latitude12, longitude21, latitude22);
+        // longitude11 = longitude11 * Math.PI / 180;
+        // latitude12 = latitude12 * Math.PI / 180;
+        // longitude21 = longitude21 * Math.PI / 180;
+        // latitude22 = latitude22 * Math.PI / 180;
+        // console.log(longitude11, latitude12, longitude21, latitude22);
+        // console.log(lat1, long1, lat2, long2);
         // Calculate the bill amount based on the provided formula
+        // const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
         const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
 
+        // const dis = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)) * 6371;
         const cost = (fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded))) * dis;
         // Create a new bill entry in the database
         await BillDetails.create({
@@ -739,6 +747,91 @@ app.get('/usercount', async (req, res) => {
 app.get('/allusers', async (req, res) => {
     const users = await User.find();
     res.send(users);
+});
+
+// fleet truck post api
+// app.post('/fleettruck', async (req, res) => {
+//     const { volumeOfWaste } = req.body;
+//     try {
+//         const vehicles = await Vehicle.find({});
+
+
+//         for (const vehicle of vehicles) {
+//             // Define cost variable here
+//             let ratio = 0; // Default ratio value
+//             if (vehicle.capacity !== 0 && vehicle.capacity !== undefined) {
+//                 ratio = (vehicle.fuelCostUnloaded + (vehicle.fuelCostLoaded - vehicle.fuelCostUnloaded)) / vehicle.capacity;
+
+//             }
+
+//             if (!volumeOfWaste || isNaN(volumeOfWaste)) {
+//                 return res.status(400).json({ status: "error", message: "Invalid input data or missing volume of waste" });
+//             }
+//             if (!cost || isNaN(cost)) {
+//                 return res.status(400).json({ status: "error", message: "Invalid input data or missing cost" });
+//             }
+//             if (!ratio || isNaN(ratio)) {
+//                 return res.status(400).json({ status: "error", message: "Invalid input data or missing ratio" });
+//             }
+
+
+//             await FleetTruck.create({
+//                 registrationNumber: vehicle.registrationNumber,
+//                 capacity: vehicle.capacity,
+//                 Ratio: ratio,
+//                 volumeOfWaste: volumeOfWaste
+//             });
+
+
+//         }
+//         res.status(201).json({ status: "ok", message: "fleet  added successfully" });
+//     } catch (err) {
+//         console.error("Error adding Route:", err);
+//         res.status(500).json({ status: "error", message: "Internal server error" });
+//     }
+// });
+
+app.post('/fleettruck', async (req, res) => {
+    const { volumeOfWaste } = req.body;
+    try {
+        await FleetTruck.deleteMany({});
+
+        // Assuming your Vehicle model is imported and defined properly
+        const vehicles = await Vehicle.find({});
+
+        for (const vehicle of vehicles) {
+            let ratio = 0; // Default ratio value
+            if (vehicle.capacity !== 0 && vehicle.capacity !== undefined) {
+                ratio = (vehicle.fuelCostUnloaded + (vehicle.fuelCostLoaded - vehicle.fuelCostUnloaded)) / vehicle.capacity;
+            }
+
+            if (!volumeOfWaste || isNaN(volumeOfWaste)) {
+                return res.status(400).json({ status: "error", message: "Invalid input data or missing volume of waste" });
+            }
+
+            // Note: You can calculate cost here if required
+            // const cost = ...
+
+            // Create a new FleetTruck document
+            await FleetTruck.create({
+                registrationNumber: vehicle.registrationNumber,
+                capacity: vehicle.capacity,
+                Ratio: ratio,
+                volumeOfWaste: volumeOfWaste
+            });
+        }
+
+        res.status(201).json({ status: "ok", message: "Fleet added successfully" });
+    } catch (err) {
+        console.error("Error adding Fleet:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+
+app.get('/fleettruck', async (req, res) => {
+    const fleetTruck = await FleetTruck.find();
+    res.send(fleetTruck);
 });
 
 

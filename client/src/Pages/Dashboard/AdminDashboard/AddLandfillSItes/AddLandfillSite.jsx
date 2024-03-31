@@ -8,6 +8,8 @@ const AddLandfillSite = () => {
     const [operationalTimespan, setOperationalTimespan] = useState('');
     const [latitude, setLatitude] = useState('');
     const [longitude, setLongitude] = useState('');
+    const [latitudeRad, setLatitudeRad] = useState('');
+    const [longitudeRad, setLongitudeRad] = useState('');
     const [managers, setManagers] = useState([]); // State to hold selected managers
 
     const handleLandfillSubmit = async (e) => {
@@ -21,6 +23,8 @@ const AddLandfillSite = () => {
                 operationalTimespan,
                 latitude,
                 longitude,
+                latitudeRad,
+                longitudeRad,
                 managers // Include managers in the request body
             });
 
@@ -66,8 +70,23 @@ const AddLandfillSite = () => {
                 />
                 <input
                     type="text"
+                    placeholder="Latitude (Radian)"
+                    onChange={(e) => setLatitudeRad(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                    required
+                />
+
+                <input
+                    type="text"
                     placeholder="Longitude (Degree)"
                     onChange={(e) => setLongitude(e.target.value)}
+                    className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Longitude (Radian)"
+                    onChange={(e) => setLongitudeRad(e.target.value)}
                     className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
                     required
                 />

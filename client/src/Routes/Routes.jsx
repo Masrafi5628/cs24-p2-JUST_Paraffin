@@ -40,6 +40,8 @@ import StsList from "../Pages/Dashboard/StsDashboard/StsList/StsList";
 import CreateMapPage from "../Pages/Dashboard/StsDashboard/CreateMapPage/CreateMapPage";
 import AdminView from "../Pages/Dashboard/AdminDashboard/AdminView/AdminView";
 import AddminAllUserView from "../Pages/Dashboard/AdminDashboard/AdminAllUserView/AddminAllUserView";
+import FleetTruck from "../Pages/Dashboard/StsDashboard/FleetTruck/FleetTruck";
+import FleetTruckView from "../Pages/Dashboard/StsDashboard/FleetTruckView/FleetTruckView";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -193,6 +195,15 @@ export const router = createBrowserRouter([
             {
                 path: "createmap",
                 element: <CreateMapPage></CreateMapPage>
+            },
+            {
+                path: "fleettruck",
+                element: <FleetTruck></FleetTruck>
+            },
+            {
+                path: "fleetview",
+                element: <FleetTruckView></FleetTruckView>
+
             }
 
         ]
