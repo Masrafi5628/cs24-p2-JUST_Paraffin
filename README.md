@@ -31,3 +31,6 @@ To install and run the project, follow these steps:
 
   Frontend: http://localhost:5173
   Backend API: http://localhost:5000
+
+System Admin Email - admin@gmail.com
+System Admin Password - 123456
