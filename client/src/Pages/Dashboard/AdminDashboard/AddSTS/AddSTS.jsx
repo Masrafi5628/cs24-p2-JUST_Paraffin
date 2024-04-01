@@ -61,7 +61,7 @@ const AddSTS = () => {
                 />
                 <input
                     type="text"
-                    placeholder="Capacity"
+                    placeholder="Capacity(Tonnes)"
                     onChange={(e) => setCapacity(e.target.value)}
                     className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
                     required
@@ -89,7 +89,7 @@ const AddSTS = () => {
                 />
                 <input
                     type="text"
-                    placeholder="Enter Manager IDs (comma-separated)"
+                    placeholder="Enter Manager User Name(s) (comma-separated)"
                     onChange={(e) => setManagers(e.target.value.split(','))}
                     className="input input-bordered w-full px-3 py-2 text-sm leading-tight focus:outline-none focus:shadow-outline mb-4"
                 />

@@ -16,12 +16,6 @@ const landfillDetailsSchema = new mongoose.Schema({
     longitude: {
         type: Number
     },
-    latitudeRad: {
-        type: Number
-    },
-    longitudeRad: {
-        type: Number
-    },
     managers: {
         type: [String],
         default: []

@@ -395,7 +395,7 @@ app.post('/sts', async (req, res) => {
 
 // add Landfill post api
 app.post('/landfill', async (req, res) => {
-    const { name, capacity, operationalTimespan, latitude, longitude, latitudeRad, longitudeRad, managers } = req.body;
+    const { name, capacity, operationalTimespan, latitude, longitude, managers } = req.body;
 
     try {
         // Check if the landfill with the given name already exists
@@ -411,8 +411,6 @@ app.post('/landfill', async (req, res) => {
             operationalTimespan,
             latitude,
             longitude,
-            latitudeRad,
-            longitudeRad,
             managers: managers || [] // Initialize managers as an empty array if not provided
         });
 
@@ -530,8 +528,9 @@ app.post('/createbill', async (req, res) => {
 
         // Extract the required details from the vehicle object
         const { capacity, fuelCostLoaded, fuelCostUnloaded } = vehicle;
-        const { longitudeRad: longitude11, latitudeRad: latitude12 } = loc_1;
-        const { longitudeRad: longitude21, latitudeRad: latitude22 } = loc_2;
+        const { longitude: longitude11, latitude: latitude12 } = loc_1;
+        const { longitude: longitude21, latitude: latitude22 } = loc_2;
+      
 
         // Check if any of the required details are missing or not a number
         if (!capacity || isNaN(capacity) || !fuelCostLoaded || isNaN(fuelCostLoaded) || !fuelCostUnloaded || isNaN(fuelCostUnloaded) || isNaN(wasteVolume)) {
@@ -541,18 +540,18 @@ app.post('/createbill', async (req, res) => {
             return res.status(400).json({ status: "error", message: "Invalid input data or missing location details" });
         }
 
-        console.log(longitude11, latitude12, longitude21, latitude22);
-        // longitude11 = longitude11 * Math.PI / 180;
-        // latitude12 = latitude12 * Math.PI / 180;
-        // longitude21 = longitude21 * Math.PI / 180;
-        // latitude22 = latitude22 * Math.PI / 180;
+        // console.log(longitude11, latitude12, longitude21, latitude22);
+       const long1= longitude11 * Math.PI / 180;
+       const lat1 = latitude12 * Math.PI / 180;
+       const long2= longitude21 * Math.PI / 180;
+        const lat2 = latitude22 * Math.PI / 180;
         // console.log(longitude11, latitude12, longitude21, latitude22);
         // console.log(lat1, long1, lat2, long2);
         // Calculate the bill amount based on the provided formula
         // const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
-        const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
+        // const dis = Math.acos(Math.sin(latitude12) * Math.sin(latitude22) + Math.cos(latitude12) * Math.cos(latitude22) * Math.cos(longitude21 - longitude11)) * 6371;
 
-        // const dis = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)) * 6371;
+        const dis = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(long2 - long1)) * 6371;
         const cost = (fuelCostUnloaded + ((wasteVolume / capacity) * (fuelCostLoaded - fuelCostUnloaded))) * dis;
         // Create a new bill entry in the database
         await BillDetails.create({
