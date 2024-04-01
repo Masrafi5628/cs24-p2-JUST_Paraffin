@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  server:
+    build: 
+      context: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - JWT_SECRET=secret
+      - DB_USERNAME=ecosyncDB
+      - DB_PASSWORD=3eoJKDvLddqXBw3h
+      - EXPIRES_IN=5d
+    env_file:
+      - ./server/.env 
+    depends_on:
+      - mongo
+
+  client:
+    build: 
+      context: ./client
+    ports:
+      - "5173:5173"
+    restart: on-failure
+    depends_on:
+      - server
+    stdin_open: true
+    tty: true
+
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=ecosyncDB
+      - MONGO_INITDB_ROOT_PASSWORD=3eoJKDvLddqXBw3h
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
