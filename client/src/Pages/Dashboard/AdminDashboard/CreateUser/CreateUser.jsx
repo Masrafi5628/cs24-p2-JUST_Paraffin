@@ -34,7 +34,7 @@ const CreateUser = () => {
 
     return (
         <div className="max-w-96 mx-auto py-20">
-            <h2 className="text-3xl mx-auto mb-10 text-center">Register Page</h2>
+            <h2 className="text-3xl mx-auto mb-10 text-center">Create User</h2>
             <form action="" onSubmit={handleSubmit}>
 
                 <div>

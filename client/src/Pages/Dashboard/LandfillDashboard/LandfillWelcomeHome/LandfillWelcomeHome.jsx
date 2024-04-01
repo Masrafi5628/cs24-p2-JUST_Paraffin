@@ -57,6 +57,7 @@ const LandfillWelcomeHome = () => {
                             </label>
                             <p className="text-lg text-gray-800">{userData.email}</p>
                         </div>
+
                         <div className="mb-6">
                             <label className="block text-sm font-bold text-gray-700">
                                 Role

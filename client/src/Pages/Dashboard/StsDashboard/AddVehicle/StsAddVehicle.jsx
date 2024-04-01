@@ -35,7 +35,7 @@ const StsAddVehicle = () => {
 
     return (
         <div>
-            <div className="max-w-96 mx-auto py-20">
+            <div className="max-w-96 mx-auto py-20 bg-white shadow-md rounded-lg px-8 py-6">
                 <h2 className="text-3xl mx-auto mb-10 text-center">Add Vehicle</h2>
                 <form onSubmit={handleOneSubmit}>
                     <div className="flex flex-col gap-3">

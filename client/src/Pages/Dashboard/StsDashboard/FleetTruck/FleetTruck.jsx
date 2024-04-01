@@ -58,7 +58,7 @@ const StsList = () => {
 
 
                 <button type="submit" className="btn btn-primary">
-                    Volume of Waste
+                    Weight of Waste
                 </button>
 
                 {errorMessage && <p className="text-red-500">{errorMessage}</p>}

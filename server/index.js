@@ -240,6 +240,8 @@ app.post("/reset-password/:id/:token", async (req, res) => {
     }
 });
 
+
+// ========================================================User Management Api
 // Get all users api
 app.get('/users', async (req, res) => {
     const users = await User.find();
