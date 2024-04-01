@@ -26,3 +26,8 @@ To install and run the project, follow these steps:
 3. Build and start the Docker containers using Docker Compose:
 
     docker-compose up -d
+
+4. Navigate to the following links for accessing the project:
+
+  Frontend: http://localhost:5173
+  Backend API: http://localhost:5000
