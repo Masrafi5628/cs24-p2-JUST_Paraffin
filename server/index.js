@@ -530,7 +530,7 @@ app.post('/createbill', async (req, res) => {
         const { capacity, fuelCostLoaded, fuelCostUnloaded } = vehicle;
         const { longitude: longitude11, latitude: latitude12 } = loc_1;
         const { longitude: longitude21, latitude: latitude22 } = loc_2;
-      
+
 
         // Check if any of the required details are missing or not a number
         if (!capacity || isNaN(capacity) || !fuelCostLoaded || isNaN(fuelCostLoaded) || !fuelCostUnloaded || isNaN(fuelCostUnloaded) || isNaN(wasteVolume)) {
@@ -541,9 +541,9 @@ app.post('/createbill', async (req, res) => {
         }
 
         // console.log(longitude11, latitude12, longitude21, latitude22);
-       const long1= longitude11 * Math.PI / 180;
-       const lat1 = latitude12 * Math.PI / 180;
-       const long2= longitude21 * Math.PI / 180;
+        const long1 = longitude11 * Math.PI / 180;
+        const lat1 = latitude12 * Math.PI / 180;
+        const long2 = longitude21 * Math.PI / 180;
         const lat2 = latitude22 * Math.PI / 180;
         // console.log(longitude11, latitude12, longitude21, latitude22);
         // console.log(lat1, long1, lat2, long2);

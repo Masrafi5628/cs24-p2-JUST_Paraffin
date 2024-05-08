@@ -8,47 +8,27 @@ const AvailableRoles = () => {
         fetch('http://localhost:5000/users/roles')
             .then(res => res.json())
             .then(data => {
-                setRoles(data)
-            })
-    }, [])
+                setRoles(data);
+            });
+    }, []);
+
+    // Function to determine background color based on role
+    // Function to determine background color based on role
+    const getRoleBackgroundColor = (role) => {
+        const lowercaseRole = role.toLowerCase();
+        switch (lowercaseRole) {
+            case "system admin":
+                return "bg-green-400";
+            case "sts manager":
+                return "bg-teal-400";
+            case "landfill manager":
+                return "bg-blue-400";
+            default:
+                return "bg-pink-400";
+        }
+    };
+
     return (
-        // <div>
-        //     <div className="flex justify-evenly my-4">
-        //         <h2 className="text-3xl">All Users</h2>
-        //         <h2 className="text-3xl">Total Usres: {roles.length}</h2>
-        //     </div>
-        //     <div className="overflow-x-auto">
-        //         <table className="table">
-        //             {/* head */}
-        //             <thead>
-        //                 <tr>
-        //                     <th></th>
-        //                     <th>Name</th>
-        //                     <th>Role</th>
-        //                     <th>Action</th>
-        //                 </tr>
-        //             </thead>
-        //             {
-        //                 roles.map((user, index) => (
-        //                     <tbody key={index}>
-        //                         <tr>
-        //                             <th>{index + 1}</th>
-        //                             <td>{user.username}</td>
-        //                             <td>{user.userType}</td>
-        //                             <td className="flex gap-2">
-
-        //                                 <Link to={`/dashboard/users/${user._id}/roles`}>
-        //                                     <button className="bg-blue-500 text-white px-4 py-1 rounded">Update Roles</button>
-        //                                 </Link>
-        //                             </td>
-        //                         </tr>
-        //                     </tbody>
-        //                 ))
-        //             }
-
-        //         </table>
-        //     </div>
-        // </div>
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
             <div className="max-w-full overflow-x-auto">
                 <table className="w-full table-auto">
@@ -72,16 +52,14 @@ const AvailableRoles = () => {
                                     <h5 className="font-medium text-black dark:text-white">
                                         {role.username}
                                     </h5>
-                                    {/* <p className="text-sm">${packageItem.price}</p> */}
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                                    <p className="text-black dark:text-white">
+                                    <p className={`inline-flex rounded-full bg-opacity-4 py-1 px-3 text-sm font-medium ${getRoleBackgroundColor(role.userType)}`}>
                                         {role.userType}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <div className="flex items-center space-x-3.5">
-
                                         <Link to={`/dashboard/users/${role._id}/roles`}>
                                             <button className="hover:text-primary">
                                                 <svg
@@ -103,10 +81,6 @@ const AvailableRoles = () => {
                                                 </svg>
                                             </button>
                                         </Link>
-
-
-
-
                                     </div>
                                 </td>
                             </tr>
@@ -119,4 +93,3 @@ const AvailableRoles = () => {
 };
 
 export default AvailableRoles;
-

@@ -28,37 +28,85 @@ const UpdateUserDetail = () => {
             });
     }
     return (
-        <div>
-            <div className="max-w-96 mx-auto py-20">
-                <h2 className="text-3xl mx-auto mb-10 text-center">Update User Details</h2>
-                <form onSubmit={handleUpdate}>
-                    <div className="flex flex-col gap-3">
-                        <input
-                            type="text"
 
-                            defaultValue={loadedUser.username}
-                            name='username'
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            defaultValue={loadedUser.email}
-                            name='email'
-                            className="input input-bordered w-full"
-                        />
-                        <input
-                            type="text"
-                            defaultValue={loadedUser.userType}
-                            name='userType'
-                            className="input input-bordered w-full"
-                        />
-                        <button type="submit" className="btn btn-primary">
-                            Update User Details
-                        </button>
+        <>
+            {/* <div>
+                <div className="max-w-96 mx-auto py-20">
+                    <h2 className="text-3xl mx-auto mb-10 text-center">Update User Details</h2>
+                    <form onSubmit={handleUpdate}>
+                        <div className="flex flex-col gap-3">
+                            <input
+                                type="text"
+
+                                defaultValue={loadedUser.username}
+                                name='username'
+                                className="input input-bordered w-full"
+                            />
+                            <input
+                                type="text"
+                                defaultValue={loadedUser.email}
+                                name='email'
+                                className="input input-bordered w-full"
+                            />
+                            <input
+                                type="text"
+                                defaultValue={loadedUser.userType}
+                                name='userType'
+                                className="input input-bordered w-full"
+                            />
+                            <button type="submit" className="btn btn-primary">
+                                Update User Details
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div> */}
+
+            <section className="common-section bg-gray-100 min-h-screen flex items-center justify-center">
+                <div className="common-wrapper max-w-md w-full p-6">
+                    <div className="card w-full max-w-md shadow-lg bg-white">
+                        <form className="card-body" onSubmit={handleUpdate}>
+                            <h3 className="text-2xl font-semibold text-center mb-4">Update User Details</h3>
+
+                            <div className="mb-4">
+                                <input
+                                    type="text"
+                                    defaultValue={loadedUser.username}
+                                    name='username'
+                                    className="input input-bordered w-full"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <input
+                                    type="text"
+                                    defaultValue={loadedUser.email}
+                                    name='email'
+                                    className="input input-bordered w-full"
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <input
+                                    type="text"
+                                    defaultValue={loadedUser.userType}
+                                    name='userType'
+                                    className="input input-bordered w-full"
+                                    required
+                                />
+                            </div>
+
+                            <div className="mb-6">
+                                <button className=" bg-slate-950 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg w-full">
+                                    Update Role
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-        </div>
+                </div>
+            </section>
+
+        </>
     );
 };
 
