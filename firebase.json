@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "cs24-p2-JUST_PARAFFIN",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
