@@ -22,18 +22,26 @@ app.use(express.json());
 
 
 
+const mongoUrl = "mongodb+srv://ecosyncDB:3eoJKDvLddqXBw3h@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0";
+// const mongoUrl = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0`;
 
-
-// const mongoUrl = "mongodb+srv://ecosyncDB:3eoJKDvLddqXBw3h@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0";
-const mongoUrl = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0`;
-
-mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
-})
-    .then(() => {
-        console.log("connect to databse");
+const connectWithRetry = () => {
+    mongoose.connect(mongoUrl, {
+        useNewUrlParser: true,
     })
-    .catch((err) => console.log(err));
+
+        .then(() => {
+            console.log("Connected to database");
+        })
+        .catch((err) => {
+            console.error("Error connecting to database:", err);
+            // Retry connection after a delay
+            setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
+        });
+};
+
+connectWithRetry();
+
 
 
 require('./userDetails');
@@ -45,6 +53,10 @@ require('./stsAddVehcile');
 require('./billGenerate');
 require('./route-view');
 require('./fleetTruck');
+require('./contractManagerSchema');
+require('./addWorker');
+const Worker = mongoose.model('workerInfo');
+const ContractManager = mongoose.model('contractManagerInfo');
 const User = mongoose.model('userInfo');
 const Vehicle = mongoose.model('vehiclesInfo');
 const Sts = mongoose.model('stsInfo');
@@ -81,27 +93,45 @@ app.post('/users', async (req, res) => {
     }
 });
 
-// Login User
+
 app.post("/auth/login", async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
     if (!user) {
-        return res.json({ error: "User Not found" });
+        const user1 = await ContractManager.findOne({ email });
+        if (!user1) {
+            const user2 = await Worker.findOne({ email });
+            console.log(user2);
+            if (!user2) {
+                return res.json({ error: "User Not found" });
+            }
+            if (await bcrypt.compare(password, user2.password)) {
+                const token = jwt.sign({ email: user2.email }, JWT_SECRET, {
+                    expiresIn: "10d",
+                });
+
+                return res.json({ status: "ok", data: token, userType: user2.userType });
+            }
+        }
+        if (await bcrypt.compare(password, user1.password)) {
+            const token = jwt.sign({ email: user1.email }, JWT_SECRET, {
+                expiresIn: "10d",
+            });
+
+            return res.json({ status: "ok", data: token, userType: user1.userType });
+        }
     }
     if (await bcrypt.compare(password, user.password)) {
         const token = jwt.sign({ email: user.email }, JWT_SECRET, {
             expiresIn: "10d",
         });
 
-        if (res.status(201)) {
-            return res.json({ status: "ok", data: token, userType: user.userType });
-        } else {
-            return res.json({ error: "error" });
-        }
+        return res.json({ status: "ok", data: token, userType: user.userType });
     }
-    res.json({ status: "error", error: "InvAlid Password" });
+    res.json({ status: "error", error: "Invalid Password" });
 });
+
 
 
 
@@ -770,6 +800,106 @@ app.get('/fleettruck', async (req, res) => {
     const fleetTruck = await FleetTruck.find();
     res.send(fleetTruck);
 });
+
+// add contractmanager post api with  password encrypted 
+app.post('/contractmanager', async (req, res) => {
+    const { name, userId, email, date, number, company, access, username, password } = req.body;
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const oldContractManager = await ContractManager.findOne({ userId });
+        if (oldContractManager) {
+            return res.send({ status: "error", message: "Contract Manager already exists" });
+        }
+        await ContractManager.create({
+            name,
+            userId,
+            email,
+            date,
+            number,
+            company,
+            access,
+            username,
+            password: encryptedPassword,
+        });
+        res.send({ status: "ok" });
+    }
+    catch (err) {
+        console.error(err); // Log the error
+        res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+    }
+
+});
+
+//add worker post api
+// app.post('/createworker', async (req, res) => {
+//     const { employeeID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password } = req.body;
+
+//     const encryptedPassword = await bcrypt.hash(password, 10);
+
+//     try {
+//         const oldWorker = await Worker.findOne({ employeeID });
+//         if (oldWorker) {
+//             return res.send({ status: "error", message: "Worker already exists" });
+//         }
+//         await Worker.create({
+//             employeeID,
+//             fullName,
+//             email,
+//             dateOfBirth,
+//             dateOfHire,
+//             jobTitle,
+//             paymentPerHour,
+//             contactInformation,
+//             assignedCollectionRoute,
+//             username,
+//             password: encryptedPassword,
+
+//         });
+//         res.send({ status: "ok" });
+//     }
+//     catch (err) {
+//         console.error(err); // Log the error
+//         res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+//     }
+// });
+
+// add worker post api
+app.post('/createworker', async (req, res) => {
+    // const { name, userId, email, date, number, company, access, username, password } = req.body;
+    const { employeeID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password } = req.body;
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const oldWorker = await Worker.findOne({ employeeID });
+        if (oldWorker) {
+            return res.send({ status: "error", message: "Worker already exists" });
+        }
+        await Worker.create({
+            employeeID,
+            fullName,
+            email,
+            dateOfBirth,
+            dateOfHire,
+            jobTitle,
+            paymentPerHour,
+            contactInformation,
+            assignedCollectionRoute,
+            username,
+            password: encryptedPassword,
+
+        });
+        res.send({ status: "ok" });
+    }
+    catch (err) {
+        console.error(err); // Log the error
+        res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+    }
+
+});
+
 
 
 

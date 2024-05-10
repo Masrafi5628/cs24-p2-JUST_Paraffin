@@ -46,6 +46,12 @@ import LogOut from "../Pages/Dashboard/StsDashboard/LogOut/LogOut";
 import LLogOut from "../Pages/Dashboard/LandfillDashboard/LLogOut/LLogOut";
 import ALogOut from "../Pages/Dashboard/AdminDashboard/ALogOut/ALogOut";
 import ResetPassword from "../Pages/Login/ResetPassword/ResetPassword";
+import ContractorManagerDashboard from "../Layout/ContractManagerDashboard";
+import ContractorManagerHome from "../Pages/Dashboard/ContractManagerDashboard/ContractorManagerHome/ContractorManagerHome";
+import AddContractManager from "../Pages/Dashboard/AdminDashboard/AddContractManager/AddContractManager";
+import AddWorker from "../Pages/Dashboard/ContractManagerDashboard/CreateWorker/CreateWorker";
+import WorkerDashboard from "../Layout/WorkerDashboard";
+import WorkerDashboardHome from "../Pages/Dashboard/WorkerDashboard/WorkerDashboardHome/WorkerDashboardHome";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -139,6 +145,10 @@ export const router = createBrowserRouter([
             {
                 path: "alluserstatistics",
                 element: <AddminAllUserView></AddminAllUserView>
+            },
+            {
+                path: "addcontractmanager",
+                element: <AddContractManager></AddContractManager>,
             },
             {
                 path: "logout",
@@ -253,6 +263,31 @@ export const router = createBrowserRouter([
                 element: <LLogOut></LLogOut>
             }
 
+        ]
+    },
+    {
+        path: "contractormanagerdashboard",
+        element: <ContractorManagerDashboard></ContractorManagerDashboard>,
+        children: [
+            {
+                path: "contractormanagerdashboardhome",
+                element: <ContractorManagerHome></ContractorManagerHome>
+            },
+            {
+                path: "createworker",
+                element: <AddWorker></AddWorker>
+            }
+
+        ]
+    },
+    {
+        path: "WorkerDashboard",
+        element: <WorkerDashboard></WorkerDashboard>,
+        children: [
+            {
+                path: "workerdashboardhome",
+                element: <WorkerDashboardHome></WorkerDashboardHome>
+            }
         ]
     }
 
