@@ -1122,7 +1122,7 @@ app.post('/generatebill', async (req, res) => {
                 fine,
                 totalbill
             });
-            res.status(201).json({ status: "ok", message: "Bill generated successfully" });
+            res.status(201).json({ status: "ok", });
         }
         catch (err) {
             console.error(err); // Log the error

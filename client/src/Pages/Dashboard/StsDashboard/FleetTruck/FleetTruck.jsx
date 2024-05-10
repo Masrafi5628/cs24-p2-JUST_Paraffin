@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
 
 const StsList = () => {
     const navigate = useNavigate();
@@ -22,7 +23,13 @@ const StsList = () => {
         })
             .then(res => {
                 if (res.data.status === 'ok') {
-                    alert('Fleet Generated Successfully');
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Fleet Generated Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
 
                     setVolumeOfWaste("");
                     setErrorMessage(""); // Clear error message

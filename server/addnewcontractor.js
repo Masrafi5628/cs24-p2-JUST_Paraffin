@@ -1,15 +1,6 @@
 const mongoose = require('mongoose');
 
 const contractorschema = new mongoose.Schema({
-    //   contractorid,company,registrationid,registrtiondate,
-    // tinnumber,
-    // contactnumber,
-    // workforcesize,
-    // paymentofwaste,
-    // requiredamount,
-    // contractduration,
-    // areaofcollection,
-    // designatedsts
     contractorid: {
         type: String
     },
