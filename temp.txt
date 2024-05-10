@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Worker Location Tracking</title>
+</head>
+<body>
+  <div id="demo">Loading...</div>
+
+  <script>
+    const x = document.getElementById("demo");
+    let trackingInterval;
+
+    // Function to start location tracking
+    function startLocationTracking() {
+      trackingInterval = setInterval(getLocation, 5000); // Update location every 5 seconds
+    }
+
+    // Function to stop location tracking
+    function stopLocationTracking() {
+      clearInterval(trackingInterval);
+    }
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendPositionToServer);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function sendPositionToServer(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      // Send the location data to the server using an AJAX request
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/update-location", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({ latitude, longitude }));
+
+      x.innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude;
+    }
+
+    // Call startLocationTracking when the worker logs in
+    startLocationTracking();
+
+    // Call stopLocationTracking when the worker logs out
+    function handleLogout() {
+      // Call API or perform necessary actions to log out the worker
+      // Then stop location tracking
+      stopLocationTracking();
+    }
+  </script>
+</body>
+</html>
