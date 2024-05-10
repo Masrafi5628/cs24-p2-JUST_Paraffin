@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 
 const BillDetailsSchema = new mongoose.Schema({
-    registrationNumber: {
-        type: String, unique: true
-    },
-    wasteVolume: {
+    totalwaste: {
         type: Number
     },
-    distance: {
+    requiredwaste: {
         type: Number
     },
-    departureLocation: {
+    basicpay: {
+        type: Number
+    },
+    deficit: {
+        type: Number
+    },
+    fine: {
+        type: Number
+    },
+    totalbill: {
         type: String
-    },
-    arrivalLocation: {
-        type: String
-    },
-    billAmount: {
-        type: Number
     },
 },
     {

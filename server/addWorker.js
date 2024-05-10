@@ -4,6 +4,9 @@ const workerSchema = new mongoose.Schema({
     employeeID: {
         type: String
     },
+    constructorID: {
+        type: String
+    },
     fullName: {
         type: String
     },

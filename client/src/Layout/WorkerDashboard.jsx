@@ -17,6 +17,7 @@ const WorkerDashboard = () => {
                     <ul className="menu p-4 w-60 flex flex-col space-y-4 min-h-full bg-slate-900 text-base-content">
                         {/* Sidebar content here */}
                         <li><NavLink exact to="/contractormanagerdashboard/contractormanagerdashboardhome" className='text-white' activeClassName="bg-white text-black">Worker Dashboard</NavLink></li>
+                        <li><NavLink exact to="/WorkerDashboard/logout" className='text-white' activeClassName="bg-white text-black">Worker Log Out</NavLink></li>
 
                     </ul>
                 </div>

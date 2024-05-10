@@ -22,7 +22,7 @@ const StsList = () => {
         })
             .then(res => {
                 if (res.data.status === 'ok') {
-                    alert('Route Generated Successfully');
+                    alert('Fleet Generated Successfully');
 
                     setVolumeOfWaste("");
                     setErrorMessage(""); // Clear error message

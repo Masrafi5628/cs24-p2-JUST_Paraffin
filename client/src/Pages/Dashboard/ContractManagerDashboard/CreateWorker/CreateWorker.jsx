@@ -2,8 +2,8 @@ import axios from "axios";
 import { useState } from "react";
 
 const AddWorker = () => {
-
     const [employeeID, setEmployeeID] = useState('');
+    const [constructorID, setConstructorID] = useState('');
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
@@ -15,12 +15,16 @@ const AddWorker = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+
+
     const handleWorkerSubmit = async (e) => {
         e.preventDefault();
-        console.log(employeeID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password);
+        console.log(employeeID, constructorID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password);
+
         try {
             const response = await axios.post('http://localhost:5000/createworker', {
                 employeeID: employeeID,
+                constructorID: constructorID,
                 fullName: fullName,
                 email: email,
                 dateOfBirth: dateOfBirth,
@@ -41,6 +45,7 @@ const AddWorker = () => {
         }
     }
 
+
     return (
 
         <>
@@ -49,6 +54,9 @@ const AddWorker = () => {
                     <div className="card w-full max-w-md shadow-lg bg-white">
                         <form className="card-body" onSubmit={handleWorkerSubmit}>
                             <h3 className="text-2xl font-semibold text-center mb-4">Add Worker</h3>
+
+                            {/* <p className="text-lg text-gray-800">{userData.userId}</p> */}
+
 
                             <div className="mb-4">
 
@@ -60,6 +68,19 @@ const AddWorker = () => {
                                     required
                                 />
                             </div>
+
+                            <div className="mb-4">
+
+                                <input
+                                    type="text"
+                                    placeholder="Constructor ID"
+                                    onChangeCapture={(e) => setConstructorID(e.target.value)}
+                                    className="input input-bordered w-full"
+                                    required
+                                />
+                            </div>
+
+
                             <div className="mb-4">
 
                                 <input

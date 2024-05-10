@@ -55,6 +55,12 @@ require('./route-view');
 require('./fleetTruck');
 require('./contractManagerSchema');
 require('./addWorker');
+require('./workingsession');
+require('./wasteinformation');
+require('./addnewcontractor');
+const contractorinfo = mongoose.model('contractorinfo');
+const wasteinfo = mongoose.model('wasteInfo');
+const WorkingSession = mongoose.model('workingsessioninfo');
 const Worker = mongoose.model('workerInfo');
 const ContractManager = mongoose.model('contractManagerInfo');
 const User = mongoose.model('userInfo');
@@ -92,8 +98,6 @@ app.post('/users', async (req, res) => {
         console.log({ status: "error" });
     }
 });
-
-
 app.post("/auth/login", async (req, res) => {
     const { email, password } = req.body;
 
@@ -106,6 +110,16 @@ app.post("/auth/login", async (req, res) => {
             if (!user2) {
                 return res.json({ error: "User Not found" });
             }
+            //store current login date and time and user id in workingsession collection
+            const date = new Date();
+            const login_date = date.toLocaleDateString();
+            const login_time = date.toLocaleTimeString();
+            const worker_id = user2._id;
+            await WorkingSession.create({
+                login_date,
+                login_time,
+                worker_id
+            });
             if (await bcrypt.compare(password, user2.password)) {
                 const token = jwt.sign({ email: user2.email }, JWT_SECRET, {
                     expiresIn: "10d",
@@ -164,6 +178,14 @@ app.get('/profile/:id', async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const user = await User.findOne(query);
+    res.send(user);
+});
+
+// get specific user updateptofile
+app.get('/constructormanager/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await ContractManager.findOne(query);
     res.send(user);
 });
 
@@ -271,6 +293,117 @@ app.post("/reset-password/:id/:token", async (req, res) => {
     }
 });
 
+app.post("/workprofile", async (req, res) => {
+    const { token } = req.body;
+    try {
+        const user = jwt.verify(token, JWT_SECRET);
+        const useremail = user.email;
+        //console.log(user);
+        // console.log(user.email);
+
+        // If token is valid, find the user by email
+        if (user) {
+            const useremail = user.email;
+            // console.log(user.email);
+            //update working session collection with logout date and time
+            const user1 = await Worker.findOne({ email: useremail });
+            // console.log(user1);
+            const date = new Date();
+            const logout_date = date.toLocaleDateString();
+            const logout_time = date.toLocaleTimeString();
+            const worker_id = user1._id;
+            // console.log(worker_id);
+            const workingSession = await WorkingSession.findOne({ worker_id: worker_id, logout_date: "null" });
+            // console.log(workingSession);
+            const login_date = workingSession.login_date;
+            const login_time = workingSession.login_time;
+            function parseDateTime(dateTimeString) {
+                const parts = dateTimeString.split(/[T ]/); // Split date and time parts
+                const dateParts = parts[0].split('/'); // Split date into MM, DD, YYYY
+                const timeParts = parts[1].split(':'); // Split time into HH, MM, SS
+                let hours = parseInt(timeParts[0]);
+                const ampm = parts[2];
+                if (ampm === 'PM' && hours < 12) hours += 12; // Adjust hours for PM
+                else if (ampm === 'AM' && hours === 12) hours = 0; // Adjust hours for AM
+                return new Date(dateParts[2], dateParts[0] - 1, dateParts[1], hours, parseInt(timeParts[1]), parseInt(timeParts[2])).getTime();
+            }
+
+            const loginDateTime = parseDateTime(`${workingSession.login_date}T${workingSession.login_time}`);
+            const logoutDateTime = parseDateTime(`${logout_date}T${logout_time}`);
+
+            const timeDifference = (logoutDateTime - loginDateTime) / 1000;
+            // // const total_time = 0;
+            await WorkingSession.updateOne(
+                {
+                    worker_id: worker_id,
+                },
+                {
+                    $set: {
+                        logout_date: logout_date,
+                        logout_time: logout_time,
+
+                        total_time: timeDifference
+                    },
+                }
+            );
+            res.json({ status: "ok", data: user });
+            // const loginDateTime = new Date(`${workingSession.login_date}T${workingSession.login_time}`);
+            // const logoutDateTime = new Date(`${logout_date}T${logout_time}`);
+            // Convert login time to milliseconds
+            // Custom function to parse date-time strings in "MM/DD/YYYYTHH:MM:SS AM/PM" format
+
+            // Calculate the time difference in milliseconds
+
+            // const timeDifference = logout_time - login_time;
+            // console.log(timeDifference);
+
+
+            // const workingSession = await WorkingSession.findOne({ worker_id: worker_id, logout_date: "null" });
+
+            // // Parse the login and logout date/time strings to create Date objects
+            // const logoutDateTime = new Date(`${logout_date}T${logout_time}`);
+            // const loginDateTime = new Date(`${workingSession.login_date}T${workingSession.login_time}`);
+
+            // // Calculate the time difference in milliseconds
+            // const timeDifference = logoutDateTime - loginDateTime;
+
+            // // Convert milliseconds to seconds
+            // const totalSeconds = timeDifference / 1000;
+            // console.log(totalSeconds);
+            // // Update the total_time field in seconds
+            // await WorkingSession.updateOne(
+            //     {
+            //         worker_id: worker_id,
+            //     },
+            //     {
+            //         $set: {
+            //             logout_date: logout_date,
+            //             logout_time: logout_time,
+            //             total_time: totalSeconds
+            //         },
+            //     }
+            // );
+
+            // res.json({ status: "ok", data: user });
+
+            // Worker.find({ email: useremail })
+            //     .then((data) => {
+            //         console.log(data);
+            //         res.json({ status: "ok", data: data });
+            //     })
+            //     .catch((error) => {
+            //         res.status(500).json({ status: "error", message: "Internal server error" });
+            //     });
+        } else {
+            res.status(401).json({ status: "error", message: "Token expired" });
+        }
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+
+
 
 // ========================================================User Management Api
 // Get all users api
@@ -279,6 +412,13 @@ app.get('/users', async (req, res) => {
     res.send(users);
 });
 
+app.get('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await User.findOne(query);
+
+    res.send(user);
+})
 
 
 // delete specific user
@@ -328,6 +468,7 @@ app.get("/users/:id", async (req, res) => {
     const user = await User.findOne(query);
     res.send(user);
 });
+
 // update user details api
 app.put('/users/:id', async (req, res) => {
     const id = req.params.id;
@@ -868,10 +1009,9 @@ app.post('/contractmanager', async (req, res) => {
 // add worker post api
 app.post('/createworker', async (req, res) => {
     // const { name, userId, email, date, number, company, access, username, password } = req.body;
-    const { employeeID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password } = req.body;
+    const { employeeID, constructorID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password } = req.body;
 
     const encryptedPassword = await bcrypt.hash(password, 10);
-
     try {
         const oldWorker = await Worker.findOne({ employeeID });
         if (oldWorker) {
@@ -879,6 +1019,7 @@ app.post('/createworker', async (req, res) => {
         }
         await Worker.create({
             employeeID,
+            constructorID,
             fullName,
             email,
             dateOfBirth,
@@ -898,6 +1039,96 @@ app.post('/createworker', async (req, res) => {
         res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
     }
 
+});
+
+// app.post for waste information
+app.post('/wasteinfo', async (req, res) => {
+    const { contractorId, timeanddate, amountofwaste, typeofwaste, designatedSTS, vehiclesusedfortransformation } = req.body;
+
+    try {
+        await wasteinfo.create({
+            contractorId,
+            timeanddate,
+            amountofwaste,
+            typeofwaste,
+            designatedSTS,
+            vehiclesusedfortransformation
+        });
+        res.status(201).json({ status: "ok", message: "Waste Information added successfully" });
+    } catch (err) {
+        console.error("Error adding Waste Information:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+//post api for add contractor
+app.post('/addcontractor', async (req, res) => {
+    const { contractorid, company, registrationid, registrationdate, tinnumber, contactnumber, workforcesize, paymentofwaste, requiredamount, contractduration, areaofcollection, designatedsts } = req.body;
+
+    try {
+        await contractorinfo.create({
+            contractorid,
+            company,
+            registrationid,
+            registrationdate,
+            tinnumber,
+            contactnumber,
+            workforcesize,
+            paymentofwaste,
+            requiredamount,
+            contractduration,
+            areaofcollection,
+            designatedsts
+        });
+        res.status(201).json({ status: "ok", message: "Contractor added successfully" });
+    }
+    catch (err) {
+        console.error(err); // Log the error
+        res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+    }
+});
+
+//post api generate bill
+app.post('/generatebill', async (req, res) => {
+    const { contractorid, finerate } = req.body;
+    const tar = await BillDetails.findOne({ contractorId: contractorid });
+    if (tar) {
+        return res.status(400).json({ status: "error", message: "Bill already exists" });
+    } else {
+        const user = await contractorinfo.findOne({ contractorid });
+        const requiredwaste = user.requiredamount;
+        const paymentofwaste = user.paymentofwaste;
+        const user1 = await wasteinfo.find({ contractorId: contractorid });
+        //drop bill generates table
+        await BillDetails.deleteMany({});
+        //total amount of waste
+        let totalwaste = 0;
+        for (const us of user1) {
+            totalwaste += us.amountofwaste;
+        }
+        totalwaste = totalwaste / 1000;
+        const basicpay = totalwaste * paymentofwaste;
+        const defict = requiredwaste - totalwaste;
+        //get max(0,defict)
+        const max = Math.max(0, defict) * paymentofwaste;
+        const fine = (max * finerate) / 100;
+        const totalbill = basicpay - fine;
+        try {
+            await BillDetails.create({
+                totalwaste,
+                requiredwaste,
+                basicpay,
+                deficit: defict,
+                fine,
+                totalbill
+            });
+            res.status(201).json({ status: "ok", message: "Bill generated successfully" });
+        }
+        catch (err) {
+            console.error(err); // Log the error
+            res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+        }
+    }
 });
 
 

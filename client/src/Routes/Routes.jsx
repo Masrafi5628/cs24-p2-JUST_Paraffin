@@ -52,6 +52,11 @@ import AddContractManager from "../Pages/Dashboard/AdminDashboard/AddContractMan
 import AddWorker from "../Pages/Dashboard/ContractManagerDashboard/CreateWorker/CreateWorker";
 import WorkerDashboard from "../Layout/WorkerDashboard";
 import WorkerDashboardHome from "../Pages/Dashboard/WorkerDashboard/WorkerDashboardHome/WorkerDashboardHome";
+import WorkLogOut from "../Pages/Dashboard/WorkerDashboard/WorkLogOut/WorkLogOut";
+import WasteInformation from "../Pages/Dashboard/StsDashboard/WasteInformation/WasteInformation";
+import AddContractor from "../Pages/Dashboard/AdminDashboard/AddContractor/AddContractor";
+import ViewGenerateBill from "../Pages/Dashboard/StsDashboard/ViewGenerateBill/ViewGenerateBill";
+import BillGeneration from "../Pages/Dashboard/StsDashboard/BillGeneration/BillGeneration";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -151,6 +156,10 @@ export const router = createBrowserRouter([
                 element: <AddContractManager></AddContractManager>,
             },
             {
+                path: "addcontractor",
+                element: <AddContractor></AddContractor>,
+            },
+            {
                 path: "logout",
                 element: <ALogOut></ALogOut>
             }
@@ -226,6 +235,19 @@ export const router = createBrowserRouter([
 
             },
             {
+                path: "wasteinformation",
+                element: <WasteInformation></WasteInformation>
+
+            },
+            {
+                path: "generatebill",
+                element: <BillGeneration></BillGeneration>
+            },
+            {
+                path: "billgenerateview",
+                element: <ViewGenerateBill></ViewGenerateBill>
+            },
+            {
                 path: "logout",
                 element: <LogOut></LogOut>
             }
@@ -275,7 +297,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "createworker",
-                element: <AddWorker></AddWorker>
+                element: <AddWorker></AddWorker>,
             }
 
         ]
@@ -287,6 +309,10 @@ export const router = createBrowserRouter([
             {
                 path: "workerdashboardhome",
                 element: <WorkerDashboardHome></WorkerDashboardHome>
+            },
+            {
+                path: "logout",
+                element: <WorkLogOut></WorkLogOut>
             }
         ]
     }

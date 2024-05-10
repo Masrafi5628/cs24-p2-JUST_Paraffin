@@ -61,6 +61,7 @@ const Dashboard = () => {
                         <li><NavLink exact to="/dashboard/addvehicle" className='text-white' activeClassName="bg-white text-black">Add Vehicle</NavLink></li>
                         <li><NavLink exact to="/dashboard/addSTS" className='text-white' activeClassName="bg-white text-black">Add STS</NavLink></li>
                         <li><NavLink exact to="/dashboard/addlandfill" className='text-white' activeClassName="bg-white text-black">Add Landfill Sites</NavLink></li>
+                        <li><NavLink exact to="/dashboard/addcontractor" className='text-white' activeClassName="bg-white text-black">Add Contractor</NavLink></li>
                         <li><NavLink exact to="/dashboard/addcontractmanager" className='text-white' activeClassName="bg-white text-black">Add Contract Manager</NavLink></li>
                         <li><NavLink exact to="/dashboard/logout" className='text-white' activeClassName="bg-white text-black">Log Out</NavLink></li>
                     </ul>

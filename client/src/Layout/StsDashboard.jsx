@@ -18,7 +18,10 @@ const StsDashboard = () => {
                     <li><NavLink to="/stsdashboard/fleettruck">Fleet Generation</NavLink></li>
                 </ul>
                 <ul className="menu">
-                    <li><NavLink to="/stsdashboard/logout">Log Out</NavLink></li>
+                    <li><NavLink to="/stsdashboard/generatebill">Generate Bill</NavLink></li>
+                </ul>
+                <ul className="menu">
+                    <li><NavLink to="/stsdashboard/wasteinformation">Waste Information</NavLink></li>
                 </ul>
 
 
