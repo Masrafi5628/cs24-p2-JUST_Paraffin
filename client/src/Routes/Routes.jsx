@@ -46,6 +46,19 @@ import LogOut from "../Pages/Dashboard/StsDashboard/LogOut/LogOut";
 import LLogOut from "../Pages/Dashboard/LandfillDashboard/LLogOut/LLogOut";
 import ALogOut from "../Pages/Dashboard/AdminDashboard/ALogOut/ALogOut";
 import ResetPassword from "../Pages/Login/ResetPassword/ResetPassword";
+import ContractorManagerDashboard from "../Layout/ContractManagerDashboard";
+import ContractorManagerHome from "../Pages/Dashboard/ContractManagerDashboard/ContractorManagerHome/ContractorManagerHome";
+import AddContractManager from "../Pages/Dashboard/AdminDashboard/AddContractManager/AddContractManager";
+import AddWorker from "../Pages/Dashboard/ContractManagerDashboard/CreateWorker/CreateWorker";
+import WorkerDashboard from "../Layout/WorkerDashboard";
+import WorkerDashboardHome from "../Pages/Dashboard/WorkerDashboard/WorkerDashboardHome/WorkerDashboardHome";
+import WorkLogOut from "../Pages/Dashboard/WorkerDashboard/WorkLogOut/WorkLogOut";
+import WasteInformation from "../Pages/Dashboard/StsDashboard/WasteInformation/WasteInformation";
+import AddContractor from "../Pages/Dashboard/AdminDashboard/AddContractor/AddContractor";
+import ViewGenerateBill from "../Pages/Dashboard/StsDashboard/ViewGenerateBill/ViewGenerateBill";
+import BillGeneration from "../Pages/Dashboard/StsDashboard/BillGeneration/BillGeneration";
+import RealTimeView from "../Pages/Dashboard/ContractManagerDashboard/RealTimeView/RealTimeView";
+import CreateMapView from "../Pages/Dashboard/ContractManagerDashboard/CreateMapView/CreateMapView";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -63,11 +76,9 @@ export const router = createBrowserRouter([
                 element: <Login></Login>
             },
             {
-                path: 'resetpassword',
+                path: '/resetpassword',
                 element: <ResetPassword></ResetPassword>
             }
-
-
 
         ]
     },
@@ -141,6 +152,14 @@ export const router = createBrowserRouter([
             {
                 path: "alluserstatistics",
                 element: <AddminAllUserView></AddminAllUserView>
+            },
+            {
+                path: "addcontractmanager",
+                element: <AddContractManager></AddContractManager>,
+            },
+            {
+                path: "addcontractor",
+                element: <AddContractor></AddContractor>,
             },
             {
                 path: "logout",
@@ -218,6 +237,19 @@ export const router = createBrowserRouter([
 
             },
             {
+                path: "wasteinformation",
+                element: <WasteInformation></WasteInformation>
+
+            },
+            {
+                path: "generatebill",
+                element: <BillGeneration></BillGeneration>
+            },
+            {
+                path: "billgenerateview",
+                element: <ViewGenerateBill></ViewGenerateBill>
+            },
+            {
                 path: "logout",
                 element: <LogOut></LogOut>
             }
@@ -255,6 +287,47 @@ export const router = createBrowserRouter([
                 element: <LLogOut></LLogOut>
             }
 
+        ]
+    },
+    {
+        path: "contractormanagerdashboard",
+        element: <ContractorManagerDashboard></ContractorManagerDashboard>,
+        children: [
+            {
+                path: "contractormanagerdashboardhome",
+                element: <ContractorManagerHome></ContractorManagerHome>
+            },
+            {
+                path: "createworker",
+                element: <AddWorker></AddWorker>,
+            },
+            {
+                path: "realtimeview",
+                element: <RealTimeView></RealTimeView>
+            },
+            {
+                path: "createmapview",
+                element: <CreateMapView></CreateMapView>
+            },
+            {
+                path: "logout",
+                element: <WorkLogOut></WorkLogOut>
+            }
+
+        ]
+    },
+    {
+        path: "WorkerDashboard",
+        element: <WorkerDashboard></WorkerDashboard>,
+        children: [
+            {
+                path: "workerdashboardhome",
+                element: <WorkerDashboardHome></WorkerDashboardHome>
+            },
+            {
+                path: "logout",
+                element: <WorkLogOut></WorkLogOut>
+            }
         ]
     }
 

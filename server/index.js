@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 var nodemailer = require('nodemailer');
 
+
 const JWT_SECRET = "secret";
 
 app.set("view engine", "ejs");
@@ -22,17 +23,26 @@ app.use(express.json());
 
 
 
-
-
 const mongoUrl = "mongodb+srv://ecosyncDB:3eoJKDvLddqXBw3h@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0";
+// const mongoUrl = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ssi7z.mongodb.net/samuraiDB?retryWrites=true&w=majority&appName=Cluster0`;
 
-mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
-})
-    .then(() => {
-        console.log("connect to databse");
+const connectWithRetry = () => {
+    mongoose.connect(mongoUrl, {
+        useNewUrlParser: true,
     })
-    .catch((err) => console.log(err));
+
+        .then(() => {
+            console.log("Connected to database");
+        })
+        .catch((err) => {
+            console.error("Error connecting to database:", err);
+            // Retry connection after a delay
+            setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
+        });
+};
+
+connectWithRetry();
+
 
 
 require('./userDetails');
@@ -44,6 +54,20 @@ require('./stsAddVehcile');
 require('./billGenerate');
 require('./route-view');
 require('./fleetTruck');
+require('./contractManagerSchema');
+require('./addWorker');
+require('./workingsession');
+require('./wasteinformation');
+require('./addnewcontractor');
+require('./realtimedata');
+require('./temppos');
+const temppos = mongoose.model('tempposinfo');
+const realtimedata = mongoose.model('realtimeinfo');
+const contractorinfo = mongoose.model('contractorinfo');
+const wasteinfo = mongoose.model('wasteInfo');
+const WorkingSession = mongoose.model('workingsessioninfo');
+const Worker = mongoose.model('workerInfo');
+const ContractManager = mongoose.model('contractManagerInfo');
 const User = mongoose.model('userInfo');
 const Vehicle = mongoose.model('vehiclesInfo');
 const Sts = mongoose.model('stsInfo');
@@ -80,27 +104,75 @@ app.post('/users', async (req, res) => {
     }
 });
 
-// Login User
 app.post("/auth/login", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, lat, lang } = req.body;
+    console.log(lat, lang);
 
     const user = await User.findOne({ email });
     if (!user) {
-        return res.json({ error: "User Not found" });
+        const user1 = await ContractManager.findOne({ email });
+        if (!user1) {
+            const user2 = await Worker.findOne({ email });
+            console.log(user2);
+            if (!user2) {
+                return res.json({ error: "User Not found" });
+            }
+            //store current login date and time and user id in workingsession collection
+            const date = new Date();
+            const login_date = date.toLocaleDateString();
+            const login_time = date.toLocaleTimeString();
+            const worker_id = user2._id;
+            await WorkingSession.create({
+                login_date,
+                login_time,
+                worker_id
+            });
+            //drop realtimedata table
+
+            await realtimedata.create({
+                worker_id: user2.employeeID,
+            });
+
+            //update lat and lang in realtimedata collection
+            await realtimedata.updateOne(
+                {
+                    worker_id: user2.employeeID,
+                },
+                {
+                    $set: {
+                        latitude: lat,
+                        longitude: lang,
+                    },
+                }
+            );
+
+            if (await bcrypt.compare(password, user2.password)) {
+                const token = jwt.sign({ email: user2.email }, JWT_SECRET, {
+                    expiresIn: "10d",
+                });
+
+                return res.json({ status: "ok", data: token, userType: user2.userType });
+            }
+        }
+        if (await bcrypt.compare(password, user1.password)) {
+            const token = jwt.sign({ email: user1.email }, JWT_SECRET, {
+                expiresIn: "10d",
+            });
+
+            return res.json({ status: "ok", data: token, userType: user1.userType });
+        }
     }
     if (await bcrypt.compare(password, user.password)) {
         const token = jwt.sign({ email: user.email }, JWT_SECRET, {
             expiresIn: "10d",
         });
 
-        if (res.status(201)) {
-            return res.json({ status: "ok", data: token, userType: user.userType });
-        } else {
-            return res.json({ error: "error" });
-        }
+        return res.json({ status: "ok", data: token, userType: user.userType });
     }
-    res.json({ status: "error", error: "InvAlid Password" });
+    res.json({ status: "error", error: "Invalid Password" });
 });
+
+
 
 
 
@@ -133,6 +205,14 @@ app.get('/profile/:id', async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const user = await User.findOne(query);
+    res.send(user);
+});
+
+// get specific user updateptofile
+app.get('/constructormanager/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await ContractManager.findOne(query);
     res.send(user);
 });
 
@@ -240,6 +320,75 @@ app.post("/reset-password/:id/:token", async (req, res) => {
     }
 });
 
+app.post("/workprofile", async (req, res) => {
+    const { token } = req.body;
+    try {
+        const user = jwt.verify(token, JWT_SECRET);
+        const useremail = user.email;
+        //console.log(user);
+        // console.log(user.email);
+
+        // If token is valid, find the user by email
+        if (user) {
+            const useremail = user.email;
+            // console.log(user.email);
+            //update working session collection with logout date and time
+            const user1 = await Worker.findOne({ email: useremail });
+            // console.log(user1);
+            const date = new Date();
+            const logout_date = date.toLocaleDateString();
+            const logout_time = date.toLocaleTimeString();
+            const worker_id = user1._id;
+            // console.log(worker_id);
+            const workingSession = await WorkingSession.findOne({ worker_id: worker_id, logout_date: "null" });
+            // console.log(workingSession);
+            const login_date = workingSession.login_date;
+            const login_time = workingSession.login_time;
+            function parseDateTime(dateTimeString) {
+                const parts = dateTimeString.split(/[T ]/); // Split date and time parts
+                const dateParts = parts[0].split('/'); // Split date into MM, DD, YYYY
+                const timeParts = parts[1].split(':'); // Split time into HH, MM, SS
+                let hours = parseInt(timeParts[0]);
+                const ampm = parts[2];
+                if (ampm === 'PM' && hours < 12) hours += 12; // Adjust hours for PM
+                else if (ampm === 'AM' && hours === 12) hours = 0; // Adjust hours for AM
+                return new Date(dateParts[2], dateParts[0] - 1, dateParts[1], hours, parseInt(timeParts[1]), parseInt(timeParts[2])).getTime();
+            }
+
+            const loginDateTime = parseDateTime(`${workingSession.login_date}T${workingSession.login_time}`);
+            const logoutDateTime = parseDateTime(`${logout_date}T${logout_time}`);
+
+            const timeDifference = (logoutDateTime - loginDateTime) / 1000;
+            // // const total_time = 0;
+            await WorkingSession.updateOne(
+                {
+                    worker_id: worker_id,
+                },
+                {
+                    $set: {
+                        logout_date: logout_date,
+                        logout_time: logout_time,
+
+                        total_time: timeDifference
+                    },
+                }
+            );
+            //delete reaaltime data collection of worker id
+            await realtimedata.delete({ worker_id: user1.employeeID });
+            //drop temppos table
+            await temppos.deleteMany();
+            res.json({ status: "ok", data: user });
+            // stopLocationTracking();
+        } else {
+            res.status(401).json({ status: "error", message: "Token expired" });
+        }
+    } catch (error) {
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+
+
 
 // ========================================================User Management Api
 // Get all users api
@@ -248,6 +397,13 @@ app.get('/users', async (req, res) => {
     res.send(users);
 });
 
+app.get('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const user = await User.findOne(query);
+
+    res.send(user);
+})
 
 
 // delete specific user
@@ -297,6 +453,7 @@ app.get("/users/:id", async (req, res) => {
     const user = await User.findOne(query);
     res.send(user);
 });
+
 // update user details api
 app.put('/users/:id', async (req, res) => {
     const id = req.params.id;
@@ -530,7 +687,7 @@ app.post('/createbill', async (req, res) => {
         const { capacity, fuelCostLoaded, fuelCostUnloaded } = vehicle;
         const { longitude: longitude11, latitude: latitude12 } = loc_1;
         const { longitude: longitude21, latitude: latitude22 } = loc_2;
-      
+
 
         // Check if any of the required details are missing or not a number
         if (!capacity || isNaN(capacity) || !fuelCostLoaded || isNaN(fuelCostLoaded) || !fuelCostUnloaded || isNaN(fuelCostUnloaded) || isNaN(wasteVolume)) {
@@ -541,9 +698,9 @@ app.post('/createbill', async (req, res) => {
         }
 
         // console.log(longitude11, latitude12, longitude21, latitude22);
-       const long1= longitude11 * Math.PI / 180;
-       const lat1 = latitude12 * Math.PI / 180;
-       const long2= longitude21 * Math.PI / 180;
+        const long1 = longitude11 * Math.PI / 180;
+        const lat1 = latitude12 * Math.PI / 180;
+        const long2 = longitude21 * Math.PI / 180;
         const lat2 = latitude22 * Math.PI / 180;
         // console.log(longitude11, latitude12, longitude21, latitude22);
         // console.log(lat1, long1, lat2, long2);
@@ -642,6 +799,17 @@ app.get('/bills', async (req, res) => {
         res.json(bills);
     } catch (err) {
         console.error("Error fetching bills:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// get all bills
+app.get('/openmap', async (req, res) => {
+    try {
+        const maps = await temppos.find();
+        res.json(maps);
+    } catch (err) {
+        console.error("Error fetching maps:", err);
         res.status(500).json({ error: "Internal server error" });
     }
 });
@@ -769,6 +937,222 @@ app.get('/fleettruck', async (req, res) => {
     const fleetTruck = await FleetTruck.find();
     res.send(fleetTruck);
 });
+
+// add contractmanager post api with  password encrypted 
+app.post('/contractmanager', async (req, res) => {
+    const { name, userId, email, date, number, company, access, username, password } = req.body;
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const oldContractManager = await ContractManager.findOne({ userId });
+        if (oldContractManager) {
+            return res.send({ status: "error", message: "Contract Manager already exists" });
+        }
+        await ContractManager.create({
+            name,
+            userId,
+            email,
+            date,
+            number,
+            company,
+            access,
+            username,
+            password: encryptedPassword,
+        });
+        res.send({ status: "ok" });
+    }
+    catch (err) {
+        console.error(err); // Log the error
+        res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+    }
+
+});
+
+//add worker post api
+// app.post('/createworker', async (req, res) => {
+//     const { employeeID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password } = req.body;
+
+//     const encryptedPassword = await bcrypt.hash(password, 10);
+
+//     try {
+//         const oldWorker = await Worker.findOne({ employeeID });
+//         if (oldWorker) {
+//             return res.send({ status: "error", message: "Worker already exists" });
+//         }
+//         await Worker.create({
+//             employeeID,
+//             fullName,
+//             email,
+//             dateOfBirth,
+//             dateOfHire,
+//             jobTitle,
+//             paymentPerHour,
+//             contactInformation,
+//             assignedCollectionRoute,
+//             username,
+//             password: encryptedPassword,
+
+//         });
+//         res.send({ status: "ok" });
+//     }
+//     catch (err) {
+//         console.error(err); // Log the error
+//         res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+//     }
+// });
+
+// add worker post api
+app.post('/createworker', async (req, res) => {
+    // const { name, userId, email, date, number, company, access, username, password } = req.body;
+    const { employeeID, constructorID, fullName, email, dateOfBirth, dateOfHire, jobTitle, paymentPerHour, contactInformation, assignedCollectionRoute, username, password } = req.body;
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    try {
+        const oldWorker = await Worker.findOne({ employeeID });
+        if (oldWorker) {
+            return res.send({ status: "error", message: "Worker already exists" });
+        }
+        await Worker.create({
+            employeeID,
+            constructorID,
+            fullName,
+            email,
+            dateOfBirth,
+            dateOfHire,
+            jobTitle,
+            paymentPerHour,
+            contactInformation,
+            assignedCollectionRoute,
+            username,
+            password: encryptedPassword,
+
+        });
+        res.send({ status: "ok" });
+    }
+    catch (err) {
+        console.error(err); // Log the error
+        res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+    }
+
+});
+
+// app.post for waste information
+app.post('/wasteinfo', async (req, res) => {
+    const { contractorId, timeanddate, amountofwaste, typeofwaste, designatedSTS, vehiclesusedfortransformation } = req.body;
+
+    try {
+        await wasteinfo.create({
+            contractorId,
+            timeanddate,
+            amountofwaste,
+            typeofwaste,
+            designatedSTS,
+            vehiclesusedfortransformation
+        });
+        res.status(201).json({ status: "ok", message: "Waste Information added successfully" });
+    } catch (err) {
+        console.error("Error adding Waste Information:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+//post api for add contractor
+app.post('/addcontractor', async (req, res) => {
+    const { contractorid, company, registrationid, registrationdate, tinnumber, contactnumber, workforcesize, paymentofwaste, requiredamount, contractduration, areaofcollection, designatedsts } = req.body;
+
+    try {
+        await contractorinfo.create({
+            contractorid,
+            company,
+            registrationid,
+            registrationdate,
+            tinnumber,
+            contactnumber,
+            workforcesize,
+            paymentofwaste,
+            requiredamount,
+            contractduration,
+            areaofcollection,
+            designatedsts
+        });
+        res.status(201).json({ status: "ok", message: "Contractor added successfully" });
+    }
+    catch (err) {
+        console.error(err); // Log the error
+        res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+    }
+});
+
+//post api generate bill
+app.post('/generatebill', async (req, res) => {
+    const { contractorid, finerate } = req.body;
+    const tar = await BillDetails.findOne({ contractorId: contractorid });
+    if (tar) {
+        return res.status(400).json({ status: "error", message: "Bill already exists" });
+    } else {
+        const user = await contractorinfo.findOne({ contractorid });
+        const requiredwaste = user.requiredamount;
+        const paymentofwaste = user.paymentofwaste;
+        const user1 = await wasteinfo.find({ contractorId: contractorid });
+        //drop bill generates table
+        await BillDetails.deleteMany({});
+        //total amount of waste
+        let totalwaste = 0;
+        for (const us of user1) {
+            totalwaste += us.amountofwaste;
+        }
+        totalwaste = totalwaste / 1000;
+        const basicpay = totalwaste * paymentofwaste;
+        const defict = requiredwaste - totalwaste;
+        //get max(0,defict)
+        const max = Math.max(0, defict) * paymentofwaste;
+        const fine = (max * finerate) / 100;
+        const totalbill = basicpay - fine;
+        try {
+            await BillDetails.create({
+                totalwaste,
+                requiredwaste,
+                basicpay,
+                deficit: defict,
+                fine,
+                totalbill
+            });
+            res.status(201).json({ status: "ok", });
+        }
+        catch (err) {
+            console.error(err); // Log the error
+            res.status(500).send({ status: "error", message: "Internal server error" }); // Send an appropriate error response
+        }
+    }
+});
+
+//post api for realtimeview
+app.post('/realtimeview', async (req, res) => {
+    const { workerid } = req.body;
+    //workerid is encrypted
+    //drop teppos table
+    await temppos.deleteMany({});
+    const user = await realtimedata.findOne({ worker_id: workerid });
+    //console.log(tem);
+    const lat = user.latitude;
+    const long = user.longitude;
+    console.log(lat, long);
+    try {
+        await temppos.create({
+            worker_id: workerid,
+            longitude: long,
+            latitude: lat
+        });
+        res.status(201).json({ status: "ok", message: "Real Time View added successfully" });
+    } catch (err) {
+        console.error("Error adding Real Time View:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+
+
 
 
 

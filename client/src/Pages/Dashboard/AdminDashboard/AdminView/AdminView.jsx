@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Chart from "chart.js/auto";
+import './AdminView.css';
 
 const AdminView = () => {
     const [totalWasteVolume, setTotalWasteVolume] = useState(null);
@@ -41,11 +42,9 @@ const AdminView = () => {
                         label: 'Waste Dumped',
                         data: [totalWasteVolume],
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)', // Red
                             'rgba(54, 162, 235, 0.5)', // Blue
                         ],
                         borderColor: [
-                            'rgba(255, 99, 132, 1)', // Red
                             'rgba(54, 162, 235, 1)', // Blue
                         ],
                         borderWidth: 1
@@ -97,14 +96,32 @@ const AdminView = () => {
 
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div>
-                    <canvas id="doughnutChart" width="400" height="400"></canvas>
+            <section className="common-section bg-gray-100 space-y-10 min-h-screen py-20 px-5">
+                <div className="container mx-auto">
+                    <div className="flex flex-col md:flex-row justify-center gap-6">
+                        {/* Card 1 */}
+                        <div className="bg-blue-300 p-6 w-80 rounded-lg shadow-md">
+                            <h2 className="text-xl font-bold mb-4">Total Waste Dumped</h2>
+                            <p className="text-gray-700 font-medium text-xl">{totalWasteVolume}</p>
+                        </div>
+
+
+                        {/* Card 2 */}
+                        <div className="bg-green-300 p-6 w-80 rounded-lg shadow-md">
+                            <h2 className="text-xl font-bold mb-4">Total Users</h2>
+                            <p className="text-gray-700 font-medium text-xl">{roles?.userCount}</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <canvas id="userPieChart" width="400" height="400"></canvas>
+                <div className="chart-view" >
+                    <div className="bg-white p-3 rounded-lg">
+                        <canvas id="doughnutChart" width="400" height="400"></canvas>
+                    </div>
+                    <div className="bg-white p-3 rounded-lg">
+                        <canvas id="userPieChart" width="400" height="400"></canvas>
+                    </div>
                 </div>
-            </div>
+            </section>
 
         </>
     );
