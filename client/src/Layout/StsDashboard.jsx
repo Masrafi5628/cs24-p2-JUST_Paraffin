@@ -23,11 +23,11 @@ const StsDashboard = () => {
                     <ul className="menu p-4 w-60 flex flex-col	space-y-4 min-h-full bg-slate-900 text-base-content">
                         {/* Sidebar content here */}
                         <li><NavLink to="/stsdashboard/stsmanager" className='text-white' activeClassName="bg-white text-black">Sts Home</NavLink></li>
-                        <li><NavLink to="/stsdashboard/addvehicle" className='text-white' activeClassName="bg-white text-black">Add Vehicle</NavLink></li>                        <li><NavLink exact to="/dashboard/createuser" className='text-white' activeClassName="bg-white text-black">Create User</NavLink></li>
+                        <li><NavLink to="/stsdashboard/addvehicle" className='text-white' activeClassName="bg-white text-black">Add Vehicle</NavLink></li>
                         <li><NavLink to="/stsdashboard/stsinfolists" className='text-white' activeClassName="bg-white text-black">View Route</NavLink></li>
                         <li><NavLink to="/stsdashboard/fleettruck" className='text-white' activeClassName="bg-white text-black">Fleet Generation</NavLink></li>
                         <li><NavLink to="/stsdashboard/generatebill" className='text-white' activeClassName="bg-white text-black">Generate Bill</NavLink></li>
-                        <li><NavLink to="/stsdashboard/wasteinformation" className='text-white' activeClassName="bg-white text-black">Waste Information</NavLink></li>
+                        <li><NavLink to="/stsdashboard/wasteinformation" className='text-white' activeClassName="bg-white text-black">Contractor Load Entry</NavLink></li>
                         <li><NavLink exact to="/stsdashboard/logout" className='text-white' activeClassName="bg-white text-black">Log Out</NavLink></li>
 
                     </ul>
