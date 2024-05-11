@@ -8,6 +8,10 @@ const AdminView = () => {
     const [doughnutChart, setDoughnutChart] = useState(null);
     const [userPieChart, setUserPieChart] = useState(null);
 
+
+
+
+
     useEffect(() => {
         fetch('http://localhost:5000/totalwaste')
             .then(res => res.json())
@@ -27,6 +31,7 @@ const AdminView = () => {
                 console.error('Error fetching user count:', error);
             });
     }, []);
+
 
     useEffect(() => {
         if (totalWasteVolume !== null) {
@@ -98,18 +103,16 @@ const AdminView = () => {
         <>
             <section className="common-section bg-gray-100 space-y-10 min-h-screen py-20 px-5">
                 <div className="container mx-auto">
-                    <div className="flex flex-col md:flex-row justify-center gap-6">
+                    <div className="flex flex-col flex-wrap md:flex-row justify-center gap-6">
                         {/* Card 1 */}
-                        <div className="bg-blue-300 p-6 w-80 rounded-lg shadow-md">
+                        <div className="bg-white p-6 w-80  rounded-lg hover:translate-y-1 transition-all .3s shadow-md">
                             <h2 className="text-xl font-bold mb-4">Total Waste Dumped</h2>
                             <p className="text-gray-700 font-medium text-xl">{totalWasteVolume}</p>
                         </div>
-
-
                         {/* Card 2 */}
-                        <div className="bg-green-300 p-6 w-80 rounded-lg shadow-md">
+                        <div className="bg-white p-6 w-80 rounded-lg hover:translate-y-1 transition-all .3s shadow-md">
                             <h2 className="text-xl font-bold mb-4">Total Users</h2>
-                            <p className="text-gray-700 font-medium text-xl">{roles?.userCount}</p>
+                            <p className="text-gray-700 font-medium  text-xl">{roles?.userCount}</p>
                         </div>
                     </div>
                 </div>
@@ -128,3 +131,4 @@ const AdminView = () => {
 };
 
 export default AdminView;
+

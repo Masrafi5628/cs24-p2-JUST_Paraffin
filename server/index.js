@@ -61,6 +61,8 @@ require('./wasteinformation');
 require('./addnewcontractor');
 require('./realtimedata');
 require('./temppos');
+require('./wasteCollectionPlan');
+const wastecollectionplan = mongoose.model('wastecollectioninfo');
 const temppos = mongoose.model('tempposinfo');
 const realtimedata = mongoose.model('realtimeinfo');
 const contractorinfo = mongoose.model('contractorinfo');
@@ -1152,9 +1154,76 @@ app.post('/realtimeview', async (req, res) => {
 });
 
 
+// get all wasteinfo app.get api
+app.get('/wasteinfo', async (req, res) => {
+    try {
+        const wasteInfo = await wasteinfo.find();
+        res.json(wasteInfo);
+    } catch (err) {
+        console.error("Error fetching wasteInfo:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// get all contractormanager app.get api
+app.get('/contractorinfo', async (req, res) => {
+    try {
+        const contractorInfo = await contractorinfo.find();
+        res.json(contractorInfo);
+    } catch (err) {
+        console.error("Error fetching contractorInfo:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// get all landfills app.get api
+app.get('/landfill', async (req, res) => {
+    try {
+        const landfill = await Landfill.find();
+        res.json(landfill);
+    } catch (err) {
+        console.error("Error fetching landfill:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
+// post api for waste collection plan
+app.post('/wastecollectionplan', async (req, res) => {
+    // areaofcollection,
+    //             collectionstarttime,
+    //             durationofcollection,
+    //             numberoflaborers,
+    //             numberofvans,
+    //             expectedwaste
+    const { areaofcollection, collectionstarttime, durationofcollection, numberoflaborers, numberofvans, expectedwaste } = req.body;
 
+    try {
+        await wastecollectionplan.create({
+            areaofcollection,
+            collectionstarttime,
+            durationofcollection,
+            numberoflaborers,
+            numberofvans,
+            expectedwaste
+        });
+        res.status(201).json({ status: "ok", message: "Waste Collection Plan added successfully" });
+    } catch (err) {
+        console.error("Error adding Waste Collection Plan:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+//workingsession get api
+app.get('/workingsession', async (req, res) => {
+    try {
+        const workingSession = await WorkingSession.find();
+        res.json(workingSession);
+    } catch (err) {
+        console.error("Error fetching workingSession:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 
 
 app.get('/', (req, res) => {

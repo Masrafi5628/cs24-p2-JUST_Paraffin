@@ -59,6 +59,7 @@ import ViewGenerateBill from "../Pages/Dashboard/StsDashboard/ViewGenerateBill/V
 import BillGeneration from "../Pages/Dashboard/StsDashboard/BillGeneration/BillGeneration";
 import RealTimeView from "../Pages/Dashboard/ContractManagerDashboard/RealTimeView/RealTimeView";
 import CreateMapView from "../Pages/Dashboard/ContractManagerDashboard/CreateMapView/CreateMapView";
+import WasteCollectionPlan from "../Pages/Dashboard/ContractManagerDashboard/WasteCollectionPlan/WasteCollectionPlan";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -308,6 +309,10 @@ export const router = createBrowserRouter([
             {
                 path: "createmapview",
                 element: <CreateMapView></CreateMapView>
+            },
+            {
+                path: "wastecollectionplan",
+                element: <WasteCollectionPlan></WasteCollectionPlan>
             },
             {
                 path: "logout",
