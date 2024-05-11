@@ -6,11 +6,11 @@ const realtimeschema = new mongoose.Schema({
     },
     longitude: {
         type: Number,
-        default: 0
+        default: null
     },
     latitude: {
         type: Number,
-        default: 0
+        default: null
     },
 },
     {

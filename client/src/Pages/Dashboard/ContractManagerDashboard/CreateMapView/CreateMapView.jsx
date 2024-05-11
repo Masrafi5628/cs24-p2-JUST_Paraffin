@@ -53,7 +53,7 @@ const CreateMapView = () => {
 
     return (
         <div className="container mx-auto py-8">
-            <h1 className="text-3xl font-bold mb-4">Map with Route</h1>
+            <h1 className="text-3xl font-bold mb-4">Worker Location</h1>
             <div ref={mapRef} className="map-container" style={{ height: '500px' }}></div>
         </div>
     );

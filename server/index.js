@@ -373,6 +373,10 @@ app.post("/workprofile", async (req, res) => {
                     },
                 }
             );
+            //delete reaaltime data collection of worker id
+            await realtimedata.delete({ worker_id: user1.employeeID });
+            //drop temppos table
+            await temppos.deleteMany();
             res.json({ status: "ok", data: user });
             // stopLocationTracking();
         } else {
