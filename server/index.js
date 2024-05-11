@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 var nodemailer = require('nodemailer');
 
+
 const JWT_SECRET = "secret";
 
 app.set("view engine", "ejs");
@@ -58,6 +59,10 @@ require('./addWorker');
 require('./workingsession');
 require('./wasteinformation');
 require('./addnewcontractor');
+require('./realtimedata');
+require('./temppos');
+const temppos = mongoose.model('tempposinfo');
+const realtimedata = mongoose.model('realtimeinfo');
 const contractorinfo = mongoose.model('contractorinfo');
 const wasteinfo = mongoose.model('wasteInfo');
 const WorkingSession = mongoose.model('workingsessioninfo');
@@ -98,8 +103,10 @@ app.post('/users', async (req, res) => {
         console.log({ status: "error" });
     }
 });
+
 app.post("/auth/login", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, lat, lang } = req.body;
+    console.log(lat, lang);
 
     const user = await User.findOne({ email });
     if (!user) {
@@ -120,6 +127,25 @@ app.post("/auth/login", async (req, res) => {
                 login_time,
                 worker_id
             });
+            //drop realtimedata table
+
+            await realtimedata.create({
+                worker_id: user2.employeeID,
+            });
+
+            //update lat and lang in realtimedata collection
+            await realtimedata.updateOne(
+                {
+                    worker_id: user2.employeeID,
+                },
+                {
+                    $set: {
+                        latitude: lat,
+                        longitude: lang,
+                    },
+                }
+            );
+
             if (await bcrypt.compare(password, user2.password)) {
                 const token = jwt.sign({ email: user2.email }, JWT_SECRET, {
                     expiresIn: "10d",
@@ -145,6 +171,7 @@ app.post("/auth/login", async (req, res) => {
     }
     res.json({ status: "error", error: "Invalid Password" });
 });
+
 
 
 
@@ -347,53 +374,7 @@ app.post("/workprofile", async (req, res) => {
                 }
             );
             res.json({ status: "ok", data: user });
-            // const loginDateTime = new Date(`${workingSession.login_date}T${workingSession.login_time}`);
-            // const logoutDateTime = new Date(`${logout_date}T${logout_time}`);
-            // Convert login time to milliseconds
-            // Custom function to parse date-time strings in "MM/DD/YYYYTHH:MM:SS AM/PM" format
-
-            // Calculate the time difference in milliseconds
-
-            // const timeDifference = logout_time - login_time;
-            // console.log(timeDifference);
-
-
-            // const workingSession = await WorkingSession.findOne({ worker_id: worker_id, logout_date: "null" });
-
-            // // Parse the login and logout date/time strings to create Date objects
-            // const logoutDateTime = new Date(`${logout_date}T${logout_time}`);
-            // const loginDateTime = new Date(`${workingSession.login_date}T${workingSession.login_time}`);
-
-            // // Calculate the time difference in milliseconds
-            // const timeDifference = logoutDateTime - loginDateTime;
-
-            // // Convert milliseconds to seconds
-            // const totalSeconds = timeDifference / 1000;
-            // console.log(totalSeconds);
-            // // Update the total_time field in seconds
-            // await WorkingSession.updateOne(
-            //     {
-            //         worker_id: worker_id,
-            //     },
-            //     {
-            //         $set: {
-            //             logout_date: logout_date,
-            //             logout_time: logout_time,
-            //             total_time: totalSeconds
-            //         },
-            //     }
-            // );
-
-            // res.json({ status: "ok", data: user });
-
-            // Worker.find({ email: useremail })
-            //     .then((data) => {
-            //         console.log(data);
-            //         res.json({ status: "ok", data: data });
-            //     })
-            //     .catch((error) => {
-            //         res.status(500).json({ status: "error", message: "Internal server error" });
-            //     });
+            // stopLocationTracking();
         } else {
             res.status(401).json({ status: "error", message: "Token expired" });
         }
@@ -818,6 +799,17 @@ app.get('/bills', async (req, res) => {
     }
 });
 
+// get all bills
+app.get('/openmap', async (req, res) => {
+    try {
+        const maps = await temppos.find();
+        res.json(maps);
+    } catch (err) {
+        console.error("Error fetching maps:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 // get all createmap
 app.get('/createmap', async (req, res) => {
     try {
@@ -1130,6 +1122,32 @@ app.post('/generatebill', async (req, res) => {
         }
     }
 });
+
+//post api for realtimeview
+app.post('/realtimeview', async (req, res) => {
+    const { workerid } = req.body;
+    //workerid is encrypted
+    //drop teppos table
+    await temppos.deleteMany({});
+    const user = await realtimedata.findOne({ worker_id: workerid });
+    //console.log(tem);
+    const lat = user.latitude;
+    const long = user.longitude;
+    console.log(lat, long);
+    try {
+        await temppos.create({
+            worker_id: workerid,
+            longitude: long,
+            latitude: lat
+        });
+        res.status(201).json({ status: "ok", message: "Real Time View added successfully" });
+    } catch (err) {
+        console.error("Error adding Real Time View:", err);
+        res.status(500).json({ status: "error", message: "Internal server error" });
+    }
+});
+
+
 
 
 

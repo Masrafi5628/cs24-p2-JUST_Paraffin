@@ -57,6 +57,8 @@ import WasteInformation from "../Pages/Dashboard/StsDashboard/WasteInformation/W
 import AddContractor from "../Pages/Dashboard/AdminDashboard/AddContractor/AddContractor";
 import ViewGenerateBill from "../Pages/Dashboard/StsDashboard/ViewGenerateBill/ViewGenerateBill";
 import BillGeneration from "../Pages/Dashboard/StsDashboard/BillGeneration/BillGeneration";
+import RealTimeView from "../Pages/Dashboard/ContractManagerDashboard/RealTimeView/RealTimeView";
+import CreateMapView from "../Pages/Dashboard/ContractManagerDashboard/CreateMapView/CreateMapView";
 // const isLoggedIn = window.localStorage.getItem("loggedIn");
 export const router = createBrowserRouter([
 
@@ -298,6 +300,18 @@ export const router = createBrowserRouter([
             {
                 path: "createworker",
                 element: <AddWorker></AddWorker>,
+            },
+            {
+                path: "realtimeview",
+                element: <RealTimeView></RealTimeView>
+            },
+            {
+                path: "createmapview",
+                element: <CreateMapView></CreateMapView>
+            },
+            {
+                path: "logout",
+                element: <WorkLogOut></WorkLogOut>
             }
 
         ]

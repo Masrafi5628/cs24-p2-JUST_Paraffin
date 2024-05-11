@@ -12,10 +12,37 @@ const Login = () => {
     const navigate = useNavigate();
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [lat, setLat] = useState('');
+    const [lang, setLang] = useState('');
+
+
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    // get device current location lat lang using js function
+    const getLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    } // end of getLocation
+
+    const showPosition = (position) => {
+        console.log("Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude);
+
+        // get the current location lat and lang
+        const lat = position.coords.latitude;
+        const lang = position.coords.longitude;
+        setLat(lat);
+        setLang(lang);
+        console.log(lat, lang);
+    } // end of showPosition
+
+    getLocation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,7 +52,7 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password, lat, lang }),
             });
             const data = await response.json();
             console.log(data.userType);

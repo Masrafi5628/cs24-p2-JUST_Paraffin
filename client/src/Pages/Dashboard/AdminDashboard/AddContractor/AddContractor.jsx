@@ -50,7 +50,7 @@ const AddContractor = () => {
                 <div className="common-wrapper max-w-md w-full p-6">
                     <div className="card w-full max-w-md shadow-lg bg-white">
                         <form className="card-body" onSubmit={handleVehicleSubmit}>
-                            <h3 className="text-2xl font-semibold text-center mb-4">Add Vehicle</h3>
+                            <h3 className="text-2xl font-semibold text-center mb-4">Add Contractor</h3>
 
                             <div className="mb-4">
                                 {/* <label className="block text-gray-700 text-sm font-bold mb-2">

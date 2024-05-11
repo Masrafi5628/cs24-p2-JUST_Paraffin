@@ -18,6 +18,8 @@ const ContractorManagerDashboard = () => {
                         {/* Sidebar content here */}
                         <li><NavLink exact to="/contractormanagerdashboard/contractormanagerdashboardhome" className='text-white' activeClassName="bg-white text-black">Contractor M Dashboard</NavLink></li>
                         <li><NavLink exact to="/contractormanagerdashboard/createworker" className='text-white' activeClassName="bg-white text-black">Add Worker</NavLink></li>
+                        <li><NavLink exact to="/contractormanagerdashboard/realtimeview" className='text-white' activeClassName="bg-white text-black">Track Worker</NavLink></li>
+                        <li><NavLink exact to="/contractormanagerdashboard/logout" className='text-white' activeClassName="bg-white text-black">Log Out</NavLink></li>
 
                     </ul>
                 </div>
